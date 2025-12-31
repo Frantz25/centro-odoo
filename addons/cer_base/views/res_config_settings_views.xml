@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="res_config_settings_view_form_inherit_cer_base" model="ir.ui.view">
+    <field name="name">res.config.settings.view.form.inherit.cer.base</field>
+    <field name="model">res.config.settings</field>
+    <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//form" position="inside">
+        <app string="CER" name="cer" groups="base.group_system">
+          <block title="Configuración CER" name="cer_base_block">
+
+            <setting string="Abono por defecto (%)"
+                     id="cer_default_deposit_percent"
+                     help="Porcentaje sugerido de abono inicial. Se guarda por compañía.">
+              <field name="cer_default_deposit_percent"/>
+            </setting>
+
+            <setting string="Vigencia de cotización (días)"
+                     id="cer_quote_validity_days"
+                     help="Días de vigencia para cotizaciones CER. Se guarda por compañía.">
+              <field name="cer_quote_validity_days"/>
+            </setting>
+
+            <setting string="Políticas obligatorias"
+                     id="cer_policy_mandatory"
+                     help="Exige aceptación explícita de políticas CER cuando aplique (global).">
+              <field name="cer_policy_mandatory"/>
+            </setting>
+
+          </block>
+        </app>
+      </xpath>
+    </field>
+  </record>
+
+</odoo>
+

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="view_product_template_form_inherit_cer_base" model="ir.ui.view">
+    <field name="name">product.template.form.inherit.cer.base</field>
+    <field name="model">product.template</field>
+    <field name="inherit_id" ref="product.product_template_form_view"/>
+    <field name="arch" type="xml">
+      <xpath expr="//sheet//notebook" position="inside">
+        <page string="CER">
+          <group>
+            <field name="cer_charge_mode"/>
+            <field name="cer_min_people" invisible="cer_charge_mode != 'person'"/>
+          </group>
+        </page>
+      </xpath>
+    </field>
+  </record>
+
+</odoo>
+
