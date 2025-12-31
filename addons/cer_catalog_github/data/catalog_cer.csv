@@ -1,0 +1,12 @@
+default_code,name,type,list_price,tax,categ,uom,active,charge_mode,min_people
+CAMP_DAY,Día de Camping,service,8000,19% IVA,CER/Actividades,Units,1,person,0
+ROOM_STD,Habitaciones,service,12000,19% IVA,CER/Habitaciones,Units,1,room_person_night,0
+ROOM_VIP,Habitación VIP,service,18000,19% IVA,CER/Habitaciones,Units,1,room_person_night,0
+ROOM_VIP_BANO,Habitación VIP con Baño Privado,service,22000,19% IVA,CER/Habitaciones,Units,1,room_person_night,0
+CAPILLA_120_INV,Capilla 120 personas INVIERNO,service,60000,19% IVA,CER/Espacios,Units,1,day,0
+CAPILLA_120_VER,Capilla 120 personas VERANO,service,30000,19% IVA,CER/Espacios,Units,1,day,0
+SALON_300_INV,Salón Multiuso 300 personas INVIERNO,service,120000,19% IVA,CER/Espacios,Units,1,day,0
+SALON_300_VER,Salón Multiuso 300 personas VERANO,service,80000,19% IVA,CER/Espacios,Units,1,day,0
+CANOPY,Canopy,service,5000,19% IVA,CER/Actividades,Units,1,person,0
+CANOPY_ARB,Canopy y arbolismo,service,7000,19% IVA,CER/Actividades,Units,1,person,0
+ARBOLISMO,Arbolismo,service,3000,19% IVA,CER/Actividades,Units,1,person,0
