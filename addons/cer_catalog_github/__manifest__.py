@@ -1,0 +1,30 @@
+# -*- coding: utf-8 -*-
+{
+    "name": "CER Catalog (GitHub)",
+    "version": "19.0.1.0.5",
+    "category": "Sales",
+    "summary": "Catálogo CER desde CSV (deploy-time) o sincronización GitHub (cron + botón)",
+    "description": "Catálogo CER desde CSV local (deploy-time) o URL RAW (GitHub/HTTP) con cron, botón y logs.",
+    "author": "CER",
+    "license": "LGPL-3",
+    "depends": [
+        "base",
+        "mail",
+        "product",
+        "uom",
+        "account",
+        "cer_base",
+    ],
+    "data": [
+        "security/cer_catalog_security.xml",
+        "security/ir.model.access.csv",
+        "views/cer_catalog_source_views.xml",
+        "views/cer_catalog_sync_log_views.xml",
+        "views/res_config_settings_views.xml",
+        "views/cer_catalog_menus.xml",
+        "data/ir_cron.xml",
+    ],
+    "post_init_hook": "post_init_hook",
+    "installable": True,
+    "application": False,
+}

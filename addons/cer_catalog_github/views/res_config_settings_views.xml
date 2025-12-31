@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="res_config_settings_view_form_inherit_cer_catalog" model="ir.ui.view">
+    <field name="name">res.config.settings.view.form.inherit.cer.catalog</field>
+    <field name="model">res.config.settings</field>
+    <field name="inherit_id" ref="cer_base.res_config_settings_view_form_inherit_cer_base"/>
+    <field name="arch" type="xml">
+
+      <xpath expr="//app[@name='cer']" position="inside">
+        <block title="Catálogo CER" name="cer_catalog_block">
+
+          <setting string="Habilitar cron de sincronización">
+            <field name="cer_catalog_cron_enabled"/>
+          </setting>
+
+          <setting string="Fuente por defecto">
+            <field name="cer_catalog_source_id"/>
+            <button name="action_cer_catalog_sync_now"
+                    type="object"
+                    string="Sincronizar ahora"
+                    class="btn-primary"
+                    groups="cer_base.group_cer_manager"/>
+          </setting>
+
+          <setting string="Impuesto venta por defecto">
+            <field name="cer_catalog_default_sale_tax_id"/>
+          </setting>
+
+          <setting string="Crear categorías automáticamente">
+            <field name="cer_catalog_allow_create_categories"/>
+          </setting>
+
+          <setting string="Permitir fallback UoM (no crea UoM)">
+            <field name="cer_catalog_allow_create_uom"/>
+          </setting>
+
+        </block>
+      </xpath>
+
+    </field>
+  </record>
+
+</odoo>

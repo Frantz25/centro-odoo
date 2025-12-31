@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="view_cer_catalog_source_list" model="ir.ui.view">
+    <field name="name">cer.catalog.source.list</field>
+    <field name="model">cer.catalog.source</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="active"/>
+        <field name="name"/>
+        <field name="company_id"/>
+        <field name="mode"/>
+        <field name="source_type"/>
+        <field name="github_raw_url" optional="show"/>
+        <field name="last_sync_at" optional="show"/>
+        <field name="last_sync_state" optional="show"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_cer_catalog_source_form" model="ir.ui.view">
+    <field name="name">cer.catalog.source.form</field>
+    <field name="model">cer.catalog.source</field>
+    <field name="arch" type="xml">
+      <form string="Fuente de Catálogo CER">
+        <header>
+          <button name="action_sync_now"
+                  type="object"
+                  string="Sincronizar ahora"
+                  class="btn-primary"
+                  groups="cer_base.group_cer_manager"/>
+          <button name="action_open_logs"
+                  type="object"
+                  string="Ver logs"
+                  class="btn-secondary"/>
+        </header>
+        <sheet>
+          <group>
+            <group>
+              <field name="active"/>
+              <field name="name"/>
+              <field name="company_id"/>
+              <field name="mode"/>
+              <field name="source_type"/>
+            </group>
+            <group string="Estado">
+              <field name="last_sync_at" readonly="1"/>
+              <field name="last_sync_state" readonly="1"/>
+              <field name="last_sync_log_id" readonly="1"/>
+              <field name="sync_log_count" readonly="1"/>
+            </group>
+          </group>
+
+          <group string="GitHub/HTTP" invisible="source_type != 'github_raw'">
+            <field name="github_raw_url"/>
+            <field name="github_token" password="1"/>
+            <div class="text-muted">
+              Usa una URL RAW a un CSV. Ej.: raw.githubusercontent.com/ORG/REPO/branch/path/catalog.csv
+            </div>
+          </group>
+
+          <group string="Modo A (Deploy-time)" invisible="source_type != 'local'">
+            <div class="alert alert-info">
+              Esta fuente sincroniza desde el CSV local del módulo (por defecto: en instalación, y también manualmente con 'Sincronizar ahora').
+              Para cambiar el catálogo, actualiza el archivo <code>cer_catalog_github/data/catalog_seed.csv</code> en tu repo y re-instala/actualiza.
+            </div>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_cer_catalog_source" model="ir.actions.act_window">
+    <field name="name">Fuentes de Catálogo</field>
+    <field name="res_model">cer.catalog.source</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+</odoo>

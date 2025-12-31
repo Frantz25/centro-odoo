@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cer_catalog_source_user,CER catalog source (user),model_cer_catalog_source,cer_base.group_cer_user,1,0,0,0
+access_cer_catalog_source_manager,CER catalog source (manager),model_cer_catalog_source,cer_base.group_cer_manager,1,1,1,1
+access_cer_catalog_sync_log_user,CER catalog sync log (user),model_cer_catalog_sync_log,cer_base.group_cer_user,1,0,0,0
+access_cer_catalog_sync_log_manager,CER catalog sync log (manager),model_cer_catalog_sync_log,cer_base.group_cer_manager,1,1,1,1
+access_cer_catalog_cron_manager,CER catalog cron (manager),model_cer_catalog_cron,cer_base.group_cer_manager,1,1,1,0
