@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="view_cer_booking_order_list" model="ir.ui.view">
+    <field name="name">cer.booking.sale.order.list</field>
+    <field name="model">sale.order</field>
+    <field name="arch" type="xml">
+      <list string="Reservas CER" decoration-danger="cer_booking_state == 'cancelled'" decoration-success="cer_booking_state == 'confirmed'">
+        <field name="cer_booking_name" string="N° Reserva"/>
+        <field name="name" string="Documento"/>
+        <field name="partner_id"/>
+        <field name="cer_date_from"/>
+        <field name="cer_date_to"/>
+        <field name="cer_booking_state"/>
+        <field name="amount_total" string="Total"/>
+        <field name="state"/>
+        <field name="company_id" optional="hide"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_cer_booking_order_calendar" model="ir.ui.view">
+    <field name="name">cer.booking.sale.order.calendar</field>
+    <field name="model">sale.order</field>
+    <field name="arch" type="xml">
+      <calendar string="Calendario Reservas CER"
+                date_start="cer_date_from"
+                date_stop="cer_date_to"
+                color="partner_id">
+        <field name="cer_booking_name"/>
+        <field name="partner_id"/>
+        <field name="cer_booking_state"/>
+      </calendar>
+    </field>
+  </record>
+
+  <record id="view_cer_booking_order_search" model="ir.ui.view">
+    <field name="name">cer.booking.sale.order.search</field>
+    <field name="model">sale.order</field>
+    <field name="arch" type="xml">
+      <search string="Buscar Reservas">
+        <field name="cer_booking_name"/>
+        <field name="name"/>
+        <field name="partner_id"/>
+        <field name="cer_booking_state"/>
+        <filter name="my" string="Mis reservas" domain="[('user_id','=',uid)]"/>
+        <filter name="reserved" string="Reservadas" domain="[('cer_booking_state','=','reserved')]"/>
+        <filter name="confirmed" string="Confirmadas" domain="[('cer_booking_state','=','confirmed')]"/>
+        <filter name="cancelled" string="Canceladas" domain="[('cer_booking_state','=','cancelled')]"/>
+      </search>
+    </field>
+  </record>
+
+  <record id="action_cer_booking_orders" model="ir.actions.act_window">
+    <field name="name">Reservas</field>
+    <field name="res_model">sale.order</field>
+    <field name="view_mode">list,calendar,form</field>
+    <field name="domain">[('cer_is_booking','=',True)]</field>
+    <field name="context">{'search_default_my': 0}</field>
+  </record>
+
+</odoo>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="sale_order_form_inherit_cer_booking" model="ir.ui.view">
+    <field name="name">sale.order.form.inherit.cer.booking</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.view_order_form"/>
+    <field name="arch" type="xml">
+
+      <!-- Header buttons -->
+      <xpath expr="//header" position="inside">
+        <button name="action_cer_mark_as_booking"
+                type="object"
+                string="Marcar como Reserva"
+                class="btn-secondary"
+                invisible="cer_is_booking or state not in ['draft','sent']"
+                groups="cer_base.group_cer_user"/>
+
+        <button name="action_cer_unmark_booking"
+                type="object"
+                string="Quitar Reserva"
+                class="btn-secondary"
+                invisible="not cer_is_booking or cer_booking_state != 'draft'"
+                groups="cer_base.group_cer_manager"/>
+
+        <button name="action_cer_booking_reserve"
+                type="object"
+                string="Reservar"
+                class="btn-primary"
+                invisible="not cer_is_booking or cer_booking_state != 'draft' or state not in ['draft','sent']"
+                groups="cer_base.group_cer_user"/>
+
+        <button name="action_cer_booking_confirm"
+                type="object"
+                string="Confirmar (Venta)"
+                class="btn-primary"
+                invisible="not cer_is_booking or cer_booking_state != 'reserved' or state not in ['draft','sent']"
+                groups="cer_base.group_cer_user"/>
+
+        <button name="action_cer_booking_cancel"
+                type="object"
+                string="Cancelar Reserva"
+                class="btn-secondary"
+                invisible="not cer_is_booking or cer_booking_state in ['cancelled']"
+                groups="cer_base.group_cer_user"/>
+      </xpath>
+
+      <!-- Booking fields near top -->
+      <xpath expr="//sheet//div[@class='oe_title']" position="after">
+        <group invisible="not cer_is_booking">
+          <group>
+            <field name="cer_booking_name" readonly="1"/>
+            <field name="cer_booking_state" readonly="1"/>
+          </group>
+        </group>
+      </xpath>
+
+      <!-- Add units reservation column on order lines -->
+      <xpath expr="//field[@name='order_line']//list//field[@name='product_id']" position="after">
+        <field name="cer_units_qty" string="Unidades" optional="show"/>
+      </xpath>
+
+    </field>
+  </record>
+
+</odoo>

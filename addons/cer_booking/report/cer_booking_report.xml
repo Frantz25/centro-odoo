@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="action_report_cer_booking" model="ir.actions.report">
+    <field name="name">Comprobante de Reserva</field>
+    <field name="model">sale.order</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">cer_booking.report_cer_booking_document</field>
+    <field name="report_file">cer_booking.report_cer_booking_document</field>
+    <field name="print_report_name">'Comprobante - %s' % (object.cer_booking_name or object.name)</field>
+    <field name="binding_model_id" ref="sale.model_sale_order"/>
+    <field name="binding_type">report</field>
+  </record>
+
+  <template id="report_cer_booking_document">
+    <t t-call="web.html_container">
+      <t t-foreach="docs" t-as="o">
+        <t t-call="web.external_layout">
+          <div class="page">
+            <h2>Comprobante de Reserva</h2>
+
+            <div class="mt-2 mb-2">
+              <div><strong>Reserva</strong>: <span t-esc="o.cer_booking_name or ''"/></div>
+              <div><strong>Cliente</strong>: <span t-field="o.partner_id"/></div>
+              <t t-if="o._fields.get('cer_date_from') and o.cer_date_from">
+                <div><strong>Fecha Entrada</strong>: <span t-field="o.cer_date_from"/></div>
+              </t>
+              <t t-if="o._fields.get('cer_date_to') and o.cer_date_to">
+                <div><strong>Fecha Salida</strong>: <span t-field="o.cer_date_to"/></div>
+              </t>
+              <t t-if="o._fields.get('cer_stay_display') and o.cer_stay_display">
+                <div><strong>Estadía</strong>: <span t-esc="o.cer_stay_display"/></div>
+              </t>
+              <t t-if="o._fields.get('cer_participants') and o.cer_participants">
+                <div><strong>Participantes</strong>: <span t-esc="o.cer_participants"/></div>
+              </t>
+              <div><strong>Estado</strong>: <span t-esc="dict(o._fields['cer_booking_state']._description_selection(o.env)).get(o.cer_booking_state, o.cer_booking_state)"/></div>
+            </div>
+
+            <table class="table table-sm o_main_table">
+              <thead>
+                <tr>
+                  <th class="text-start">Descripción</th>
+                  <th class="text-end">Unidades</th>
+                  <th class="text-end">Cantidad de Personas</th>
+                  <th class="text-end">Noches y/o Días</th>
+                  <th class="text-end">Precio unitario</th>
+                  <th class="text-end">Precio total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <t t-foreach="o.order_line" t-as="l">
+                  <t t-if="l.display_type == 'line_section'">
+                    <tr class="o_line_section"><td colspan="6"><strong t-field="l.name"/></td></tr>
+                  </t>
+                  <t t-elif="l.display_type == 'line_note'">
+                    <tr class="o_line_note"><td colspan="6"><em t-field="l.name"/></td></tr>
+                  </t>
+                  <t t-else="">
+                    <tr>
+                      <td class="text-start"><span t-field="l.name"/></td>
+                      <td class="text-end"><span t-esc="l.cer_units_qty or ''"/></td>
+                      <td class="text-end"><span t-esc="getattr(l, 'cer_participants', '') or ''"/></td>
+                      <td class="text-end"><span t-esc="getattr(l, 'cer_duration_display', '') or ''"/></td>
+                      <td class="text-end">
+                        <t t-if="l._fields.get('cer_price_unit_excl_tax')">
+                          <span t-field="l.cer_price_unit_excl_tax"/>
+                        </t>
+                        <t t-else=""><span t-field="l.price_unit"/></t>
+                      </td>
+                      <td class="text-end"><span t-field="l.price_total"/></td>
+                    </tr>
+                  </t>
+                </t>
+              </tbody>
+            </table>
+
+            <div class="row mt-3">
+              <div class="col-6"/>
+              <div class="col-6">
+                <table class="table table-sm">
+                  <tr><td class="text-end"><strong>Neto</strong></td><td class="text-end"><span t-field="o.amount_untaxed"/></td></tr>
+                  <tr><td class="text-end"><strong>IVA</strong></td><td class="text-end"><span t-field="o.amount_tax"/></td></tr>
+                  <tr><td class="text-end"><strong>Total</strong></td><td class="text-end"><span t-field="o.amount_total"/></td></tr>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </t>
+      </t>
+    </t>
+  </template>
+
+</odoo>

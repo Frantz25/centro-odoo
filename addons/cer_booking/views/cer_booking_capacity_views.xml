@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!-- Lista simple para editar capacidad de recursos reservables -->
+  <record id="view_cer_booking_capacity_list" model="ir.ui.view">
+    <field name="name">cer.booking.capacity.list</field>
+    <field name="model">product.template</field>
+    <field name="arch" type="xml">
+      <list string="CR-Capacidad">
+        <field name="default_code" string="Código"/>
+        <field name="name" string="Descripción"/>
+        <field name="uom_id" string="Unidad" optional="show"/>
+        <field name="cer_capacity_units" string="CR-Capacidad"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="action_cer_booking_capacity" model="ir.actions.act_window">
+    <field name="name">CR-Capacidad</field>
+    <field name="res_model">product.template</field>
+    <field name="view_mode">list,form</field>
+    <field name="view_id" ref="cer_booking.view_cer_booking_capacity_list"/>
+    <field name="domain">[('cer_reservable','=',True)]</field>
+    <field name="context">{'search_default_cer_reservable': 1}</field>
+  </record>
+
+</odoo>
