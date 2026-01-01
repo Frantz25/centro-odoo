@@ -1,0 +1,26 @@
+# -*- coding: utf-8 -*-
+{
+    "name": "CER Pricing",
+    "version": "19.0.1.0.14",
+    "category": "Sales",
+    "summary": "Motor CER de cantidades/temporadas + columnas CER en cotización/portal/PDF + descuentos",
+    "description": "Reglas CER (personas/noches/días), temporadas y tarifas. Muestra columnas CER en cotización, portal y PDF. Soporta descuentos fijos por cliente.",
+    "author": "CER",
+    "license": "LGPL-3",
+    "depends": ["base", "sale", "product", "account", "portal", "website", "cer_base"],
+    "data": [
+        "security/ir.model.access.csv",
+        "security/cer_pricing_security.xml",
+        "views/cer_pricing_season_views.xml",
+        "views/cer_pricing_rate_views.xml",
+        "views/cer_pricing_discount_views.xml",
+        "views/cer_pricing_menus.xml",
+        "views/res_partner_views.xml",
+        "views/sale_order_views.xml",
+        "views/sale_order_line_views.xml",
+        "views/portal_sale_order_templates.xml",
+        "report/cer_sale_order_report.xml",
+    ],
+    "installable": True,
+    "application": False,
+}

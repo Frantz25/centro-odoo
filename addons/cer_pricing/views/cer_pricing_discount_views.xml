@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_cer_pricing_discount_list" model="ir.ui.view">
+    <field name="name">cer.pricing.discount.list</field>
+    <field name="model">cer.pricing.discount</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="active"/>
+        <field name="name"/>
+        <field name="code"/>
+        <field name="company_id"/>
+        <field name="discount_percent"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_cer_pricing_discount_form" model="ir.ui.view">
+    <field name="name">cer.pricing.discount.form</field>
+    <field name="model">cer.pricing.discount</field>
+    <field name="arch" type="xml">
+      <form string="Descuento CER">
+        <sheet>
+          <group>
+            <group>
+              <field name="active"/>
+              <field name="company_id"/>
+              <field name="name"/>
+              <field name="code"/>
+            </group>
+            <group>
+              <field name="discount_percent"/>
+            </group>
+          </group>
+          <group>
+            <field name="note" placeholder="Notas internas..."/>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_cer_pricing_discounts" model="ir.actions.act_window">
+    <field name="name">Descuentos</field>
+    <field name="res_model">cer.pricing.discount</field>
+    <field name="view_mode">list,form</field>
+  </record>
+</odoo>

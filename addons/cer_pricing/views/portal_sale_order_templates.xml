@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="portal_sale_order_inherit_cer_pricing" inherit_id="sale.sale_order_portal_content">
+    <xpath expr="//table[contains(@class,'table')][1]" position="replace">
+      <t t-set="order" t-value="(locals().get('sale_order') or locals().get('order') or locals().get('doc') or locals().get('o'))"/>
+
+      <t t-if="order">
+        <div class="mt-2 mb-3">
+          <t t-if="order._fields.get('cer_date_from') and order.cer_date_from">
+            <div><strong>Fecha Entrada</strong>: <span t-field="order.cer_date_from"/></div>
+          </t>
+          <t t-if="order._fields.get('cer_date_to') and order.cer_date_to">
+            <div><strong>Fecha Salida</strong>: <span t-field="order.cer_date_to"/></div>
+          </t>
+          <t t-if="order._fields.get('cer_stay_display') and order.cer_stay_display">
+            <div><strong>Estadía</strong>: <span t-esc="order.cer_stay_display"/></div>
+          </t>
+          <t t-if="order._fields.get('cer_participants') and order.cer_participants">
+            <div><strong>Participantes</strong>: <span t-esc="order.cer_participants"/></div>
+          </t>
+        </div>
+
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Descripción</th>
+              <th class="text-end">Cantidad de Personas</th>
+              <th class="text-end">Noches y/o Días</th>
+              <th class="text-end">Precio unitario</th>
+              <th class="text-end">Precio total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <t t-foreach="order.order_line" t-as="l">
+              <t t-if="l.display_type == 'line_section'">
+                <tr class="o_line_section">
+                  <td colspan="5"><strong t-field="l.name"/></td>
+                </tr>
+              </t>
+              <t t-elif="l.display_type == 'line_note'">
+                <tr class="o_line_note">
+                  <td colspan="5"><em t-field="l.name"/></td>
+                </tr>
+              </t>
+              <t t-else="">
+                <tr>
+                  <td><span t-field="l.name"/></td>
+                  <td class="text-end"><span t-esc="l.cer_participants or ''"/></td>
+                  <td class="text-end"><span t-esc="l.cer_duration_display or ''"/></td>
+                  <td class="text-end"><span t-field="l.cer_price_unit_excl_tax"/></td>
+                  <td class="text-end"><span t-field="l.price_total"/></td>
+                </tr>
+              </t>
+            </t>
+          </tbody>
+        </table>
+      </t>
+    </xpath>
+  </template>
+</odoo>

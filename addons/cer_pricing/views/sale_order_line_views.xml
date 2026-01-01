@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_sale_order_form_inherit_cer_pricing_lines" model="ir.ui.view">
+    <field name="name">sale.order.form.inherit.cer.pricing.lines</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.view_order_form"/>
+    <field name="arch" type="xml">
+
+      <!-- Cambiar encabezado de la primera columna -->
+      <xpath expr="//field[@name='order_line']//list//field[@name='product_id']" position="attributes">
+        <attribute name="string">Descripción</attribute>
+      </xpath>
+
+      <xpath expr="//field[@name='order_line']//list//field[@name='product_id']" position="after">
+        <field name="cer_participants" string="Cantidad de Personas" optional="show"/>
+        <field name="cer_duration_display" string="Noches y/o Días" optional="show"/>
+      </xpath>
+
+      <!-- Ocultar la cantidad estándar -->
+      <xpath expr="//field[@name='order_line']//list//field[@name='product_uom_qty']" position="attributes">
+        <attribute name="optional">hide</attribute>
+      </xpath>
+
+      <!-- Reemplazar precio unitario por precio unitario SIN IVA -->
+      <xpath expr="//field[@name='order_line']//list//field[@name='price_unit']" position="replace">
+        <field name="cer_price_unit_excl_tax" string="Precio unitario" optional="show"/>
+      </xpath>
+
+      <!-- Ocultar subtotal (evita duplicados en Odoo 19) -->
+      <xpath expr="//field[@name='order_line']//list//field[@name='price_subtotal']" position="attributes">
+        <attribute name="invisible">1</attribute>
+        <attribute name="optional">hide</attribute>
+      </xpath>
+
+      <!-- Renombrar "Importe" => "Precio total" (columna total con IVA) -->
+      <xpath expr="//field[@name='order_line']//list//field[@name='price_total']" position="attributes">
+        <attribute name="string">Precio total</attribute>
+      </xpath>
+
+      <!-- Campos técnicos CER ocultos -->
+      <xpath expr="//field[@name='order_line']//list//field[@name='product_uom_qty']" position="after">
+        <field name="cer_auto_qty" optional="hide"/>
+        <field name="cer_apply_discount" optional="hide"/>
+        <field name="cer_nights" optional="hide" readonly="1"/>
+        <field name="cer_days" optional="hide" readonly="1"/>
+        <field name="cer_qty_computed" optional="hide" readonly="1"/>
+        <field name="cer_season_id" optional="hide" readonly="1"/>
+      </xpath>
+
+    </field>
+  </record>
+</odoo>

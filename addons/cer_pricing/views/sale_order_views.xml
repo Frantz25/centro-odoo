@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_sale_order_form_inherit_cer_pricing_dates" model="ir.ui.view">
+    <field name="name">sale.order.form.inherit.cer.pricing.dates</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.view_order_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='validity_date']" position="after">
+        <field name="cer_date_from"/>
+        <field name="cer_date_to"/>
+        <field name="cer_stay_display" readonly="1"/>
+        <field name="cer_participants"/>
+      </xpath>
+
+      <xpath expr="//field[@name='pricelist_id']" position="after">
+        <field name="cer_discount_id"/>
+      </xpath>
+    </field>
+  </record>
+</odoo>

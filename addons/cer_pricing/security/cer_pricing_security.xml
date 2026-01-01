@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <record id="rule_cer_pricing_season_company" model="ir.rule">
+      <field name="name">CER Pricing Season multi-company</field>
+      <field name="model_id" ref="model_cer_pricing_season"/>
+      <field name="domain_force">[('company_id','in',company_ids)]</field>
+      <field name="groups" eval="[(4, ref('cer_base.group_cer_user'))]"/>
+    </record>
+
+    <record id="rule_cer_pricing_rate_company" model="ir.rule">
+      <field name="name">CER Pricing Rate multi-company</field>
+      <field name="model_id" ref="model_cer_pricing_rate"/>
+      <field name="domain_force">[('company_id','in',company_ids)]</field>
+      <field name="groups" eval="[(4, ref('cer_base.group_cer_user'))]"/>
+    </record>
+
+    <record id="rule_cer_pricing_discount_company" model="ir.rule">
+      <field name="name">CER Pricing Discount multi-company</field>
+      <field name="model_id" ref="model_cer_pricing_discount"/>
+      <field name="domain_force">[('company_id','in',company_ids)]</field>
+      <field name="groups" eval="[(4, ref('cer_base.group_cer_user'))]"/>
+    </record>
+  </data>
+</odoo>

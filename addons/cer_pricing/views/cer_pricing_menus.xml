@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <menuitem id="menu_cer_pricing_root" name="CER" parent="sale.menu_sale_config" sequence="90" groups="cer_base.group_cer_manager"/>
+  <menuitem id="menu_cer_pricing_seasons" name="Temporadas" parent="cer_pricing.menu_cer_pricing_root" action="cer_pricing.action_cer_pricing_seasons" sequence="10" groups="cer_base.group_cer_manager"/>
+  <menuitem id="menu_cer_pricing_rates" name="Tarifas" parent="cer_pricing.menu_cer_pricing_root" action="cer_pricing.action_cer_pricing_rates" sequence="20" groups="cer_base.group_cer_manager"/>
+  <menuitem id="menu_cer_pricing_discounts" name="Descuentos" parent="cer_pricing.menu_cer_pricing_root" action="cer_pricing.action_cer_pricing_discounts" sequence="30" groups="cer_base.group_cer_manager"/>
+</odoo>
