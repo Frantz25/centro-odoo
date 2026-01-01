@@ -37,12 +37,6 @@ class SaleOrderLine(models.Model):
     @api.depends("cer_charge_mode", "order_id.cer_stay_nights", "order_id.cer_stay_days")
     def _compute_cer_duration_display(self):
         for line in self:
-            # Camping (CAMP_DAY): mostrar duración en días aunque el modo sea "person"
-            if line.product_id and line.product_id.default_code == "CAMP_DAY":
-                days = line.cer_days or (line.order_id.cer_stay_days if line.order_id else 0) or 0
-                line.cer_duration_display = str(int(days)) if days else ""
-                continue
-
             if line.cer_charge_mode == "room_person_night":
                 # noche(s)
                 nights = line.order_id.cer_stay_nights or line.cer_nights or 0

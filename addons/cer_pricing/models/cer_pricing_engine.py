@@ -43,10 +43,6 @@ class CERPricingEngine(models.AbstractModel):
             qty = float(days)
             return {"qty": qty, "participants": participants, "nights": int(nights_raw), "days": days}
 
-        if charge_mode == "person_day":
-            qty = float(max(0, participants) * max(0, days))
-            return {"qty": qty, "participants": participants, "nights": int(nights_raw), "days": days}
-
         if charge_mode == "person":
             base = max(0, participants)
             min_people = int(min_people or 0)

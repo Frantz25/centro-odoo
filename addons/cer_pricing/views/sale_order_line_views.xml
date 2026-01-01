@@ -26,15 +26,9 @@
         <field name="cer_price_unit_excl_tax" string="Precio unitario" optional="show"/>
       </xpath>
 
-      <!-- Ocultar subtotal (evita duplicados en Odoo 19) -->
-      <xpath expr="//field[@name='order_line']//list//field[@name='price_subtotal']" position="attributes">
-        <attribute name="invisible">1</attribute>
-        <attribute name="optional">hide</attribute>
-      </xpath>
-
-      <!-- Renombrar "Importe" => "Precio total" (columna total con IVA) -->
-      <xpath expr="//field[@name='order_line']//list//field[@name='price_total']" position="attributes">
-        <attribute name="string">Precio total</attribute>
+      <!-- Quitar 'Importe' y mostrar solo Precio total -->
+      <xpath expr="//field[@name='order_line']//list//field[@name='price_subtotal']" position="replace">
+        <field name="price_total" string="Precio total" optional="show"/>
       </xpath>
 
       <!-- Campos técnicos CER ocultos -->

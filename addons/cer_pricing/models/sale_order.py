@@ -103,12 +103,8 @@ class SaleOrder(models.Model):
                 # Recalcula cantidad interna según modo (sin necesidad de wizard)
                 if line.cer_auto_qty and order.cer_date_from and order.cer_date_to:
                     participants = int(line.cer_participants or order.cer_participants or 0)
-                    charge_mode = line.cer_charge_mode or "fixed"
-                    if (line.product_id and line.product_id.default_code == "CAMP_DAY" and charge_mode in ("person", "fixed")):
-                        # Camping: cobra por persona x día y muestra duración (días) en la grilla
-                        charge_mode = "person_day"
                     payload = Engine.compute_line_payload(
-                        charge_mode=charge_mode,
+                        charge_mode=line.cer_charge_mode or "fixed",
                         participants=participants,
                         min_people=line.cer_min_people or 0,
                         date_from=order.cer_date_from,

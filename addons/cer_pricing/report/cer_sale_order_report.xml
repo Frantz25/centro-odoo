@@ -2,10 +2,9 @@
 <odoo>
   <template id="report_saleorder_document_inherit_cer_pricing" inherit_id="sale.report_saleorder_document">
     <xpath expr="/t" position="replace">
-      <t t-call="web.external_layout">
-        <t t-set="order" t-value="(locals().get('doc') or locals().get('o'))"/>
-
-        <div class="page" t-if="order">
+      <t t-foreach="docs" t-as="order">
+        <t t-call="web.external_layout">
+<div class="page">
           <!-- Encabezado CER -->
           <div class="mt-2 mb-2">
             <t t-if="order._fields.get('cer_date_from') and order.cer_date_from">
@@ -64,6 +63,7 @@
           <!-- Totales: reusar bloque estándar -->
           <t t-call="sale.report_saleorder_totals"/>
         </div>
+        </t>
       </t>
     </xpath>
   </template>
