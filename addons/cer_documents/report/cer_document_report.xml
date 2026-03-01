@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="report_cer_document">
+    <t t-call="web.external_layout">
+      <div class="page">
+        <h2 t-esc="doc.name"/>
+        <p class="text-muted">
+          <span t-esc="doc.number"/> - <span t-esc="doc.create_date"/>
+        </p>
+        <div t-raw="doc.html_content or ''"/>
+      </div>
+    </t>
+  </template>
+
+  <record id="action_report_cer_document" model="ir.actions.report">
+    <field name="name">Documento CER</field>
+    <field name="model">cer.document</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">cer_documents.report_cer_document</field>
+    <field name="report_file">cer_documents.report_cer_document</field>
+    <field name="print_report_name">'%s' % (object.number or object.name)</field>
+  </record>
+</odoo>

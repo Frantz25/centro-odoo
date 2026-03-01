@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data noupdate="0">
+
+    <record id="rule_booking_reserved_customer" model="cer.communication.rule">
+      <field name="name">Booking reservada → Cliente</field>
+      <field name="company_id" eval="ref('base.main_company')"/>
+      <field name="model_id" ref="sale.model_sale_order"/>
+      <field name="event_code">booking_reserved</field>
+      <field name="template_id" ref="cer_communications.mail_template_cer_booking_reserved"/>
+      <field name="recipient_mode">customer</field>
+      <field name="channel_email" eval="True"/>
+      <field name="channel_chatter" eval="True"/>
+      <field name="sequence">10</field>
+    </record>
+
+    <record id="rule_booking_confirmed_customer" model="cer.communication.rule">
+      <field name="name">Booking confirmada → Cliente</field>
+      <field name="company_id" eval="ref('base.main_company')"/>
+      <field name="model_id" ref="sale.model_sale_order"/>
+      <field name="event_code">booking_confirmed</field>
+      <field name="template_id" ref="cer_communications.mail_template_cer_booking_confirmed"/>
+      <field name="recipient_mode">customer</field>
+      <field name="channel_email" eval="True"/>
+      <field name="channel_chatter" eval="True"/>
+      <field name="sequence">10</field>
+    </record>
+
+    <record id="rule_booking_cancelled_customer" model="cer.communication.rule">
+      <field name="name">Booking cancelada → Cliente</field>
+      <field name="company_id" eval="ref('base.main_company')"/>
+      <field name="model_id" ref="sale.model_sale_order"/>
+      <field name="event_code">booking_cancelled</field>
+      <field name="template_id" ref="cer_communications.mail_template_cer_booking_cancelled"/>
+      <field name="recipient_mode">customer</field>
+      <field name="channel_email" eval="True"/>
+      <field name="channel_chatter" eval="True"/>
+      <field name="sequence">10</field>
+    </record>
+
+    <record id="rule_catalog_sync_failed_custom" model="cer.communication.rule">
+      <field name="name">Catálogo falló → Emails personalizados</field>
+      <field name="company_id" eval="ref('base.main_company')"/>
+      <field name="model_id" ref="cer_catalog_github.model_cer_catalog_sync_log"/>
+      <field name="event_code">catalog_sync_failed</field>
+      <field name="template_id" ref="cer_communications.mail_template_cer_catalog_sync_failed"/>
+      <field name="recipient_mode">custom</field>
+      <field name="custom_emails">admin@tudominio.cl</field>
+      <field name="channel_email" eval="True"/>
+      <field name="channel_chatter" eval="False"/>
+      <field name="sequence">10</field>
+    </record>
+
+    <record id="rule_catalog_sync_success_custom" model="cer.communication.rule">
+      <field name="name">Catálogo OK → Emails personalizados</field>
+      <field name="company_id" eval="ref('base.main_company')"/>
+      <field name="model_id" ref="cer_catalog_github.model_cer_catalog_sync_log"/>
+      <field name="event_code">catalog_sync_success</field>
+      <field name="template_id" ref="cer_communications.mail_template_cer_catalog_sync_success"/>
+      <field name="recipient_mode">custom</field>
+      <field name="custom_emails">admin@tudominio.cl</field>
+      <field name="channel_email" eval="True"/>
+      <field name="channel_chatter" eval="False"/>
+      <field name="sequence">10</field>
+    </record>
+
+    <record id="rule_document_finalized_custom" model="cer.communication.rule">
+      <field name="name">Documento finalizado → Emails personalizados</field>
+      <field name="company_id" eval="ref('base.main_company')"/>
+      <field name="model_id" ref="cer_documents.model_cer_document"/>
+      <field name="event_code">document_finalized</field>
+      <field name="template_id" ref="cer_communications.mail_template_cer_document_finalized"/>
+      <field name="recipient_mode">custom</field>
+      <field name="custom_emails">admin@tudominio.cl</field>
+      <field name="channel_email" eval="True"/>
+      <field name="channel_chatter" eval="True"/>
+      <field name="sequence">10</field>
+    </record>
+
+    <record id="rule_sale_validity_reminder_customer" model="cer.communication.rule">
+      <field name="name">Recordatorio vigencia → Cliente</field>
+      <field name="company_id" eval="ref('base.main_company')"/>
+      <field name="model_id" ref="sale.model_sale_order"/>
+      <field name="event_code">sale_validity_reminder</field>
+      <field name="template_id" ref="cer_communications.mail_template_cer_sale_validity_reminder"/>
+      <field name="recipient_mode">customer</field>
+      <field name="channel_email" eval="True"/>
+      <field name="channel_chatter" eval="True"/>
+      <field name="sequence">10</field>
+    </record>
+
+  </data>
+</odoo>

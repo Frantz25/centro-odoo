@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!-- Aparece en CER > Configuración (mismo estilo que Catálogo/Plantillas/Documentos) -->
+  <menuitem id="menu_cer_communications_root"
+            name="Comunicaciones"
+            parent="cer_base.menu_cer_configuration"
+            sequence="60"
+            groups="cer_base.group_cer_manager"/>
+
+  <menuitem id="menu_cer_communications_rules"
+            name="Reglas"
+            parent="cer_communications.menu_cer_communications_root"
+            action="cer_communications.action_cer_communication_rule"
+            sequence="10"
+            groups="cer_base.group_cer_manager"/>
+
+</odoo>

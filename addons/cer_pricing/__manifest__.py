@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "CER Pricing",
-    "version": "19.0.1.0.14",
+    "version": "19.0.1.0.15",
     "category": "Sales",
     "summary": "Motor CER de cantidades/temporadas + columnas CER en cotización/portal/PDF + descuentos",
     "description": "Reglas CER (personas/noches/días), temporadas y tarifas. Muestra columnas CER en cotización, portal y PDF. Soporta descuentos fijos por cliente.",
@@ -18,6 +18,7 @@
         "views/res_partner_views.xml",
         "views/sale_order_views.xml",
         "views/sale_order_line_views.xml",
+        "wizards/cer_pricing_apply_wizard_views.xml",
         "views/portal_sale_order_templates.xml",
         "report/cer_sale_order_report.xml",
     ],

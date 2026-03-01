@@ -34,18 +34,28 @@ class SaleOrderLine(models.Model):
     cer_charge_mode = fields.Selection(related="product_id.product_tmpl_id.cer_charge_mode", store=True, readonly=True)
     cer_min_people = fields.Integer(related="product_id.product_tmpl_id.cer_min_people", store=True, readonly=True)
 
-    @api.depends("cer_charge_mode", "order_id.cer_stay_nights", "order_id.cer_stay_days")
+    @api.depends("cer_charge_mode", "order_id.cer_date_from", "order_id.cer_date_to", "order_id.cer_stay_nights", "order_id.cer_stay_days", "cer_nights", "cer_days")
     def _compute_cer_duration_display(self):
         for line in self:
+            if not (line.order_id.cer_date_from and line.order_id.cer_date_to):
+                line.cer_duration_display = ""
+                continue
+
+            # Camping por día: mostrar días
+            if line.product_id and line.product_id.default_code == "CAMP_DAY":
+                days = line.order_id.cer_stay_days or line.cer_days or 0
+                line.cer_duration_display = str(int(max(1, days)))
+                continue
+
             if line.cer_charge_mode == "room_person_night":
-                # noche(s)
                 nights = line.order_id.cer_stay_nights or line.cer_nights or 0
-                line.cer_duration_display = str(int(max(1, nights))) if line.order_id.cer_date_from and line.order_id.cer_date_to else ""
+                line.cer_duration_display = str(int(max(1, nights)))
             elif line.cer_charge_mode == "day":
                 days = line.order_id.cer_stay_days or line.cer_days or 0
-                line.cer_duration_display = str(int(days)) if line.order_id.cer_date_from and line.order_id.cer_date_to else ""
+                line.cer_duration_display = str(int(max(1, days)))
             else:
                 line.cer_duration_display = ""
+
 
     @api.depends("price_subtotal", "product_uom_qty", "currency_id")
     def _compute_cer_price_unit_excl_tax(self):

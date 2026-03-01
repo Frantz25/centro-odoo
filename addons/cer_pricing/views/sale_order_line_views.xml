@@ -6,39 +6,45 @@
     <field name="inherit_id" ref="sale.view_order_form"/>
     <field name="arch" type="xml">
 
-      <!-- Cambiar encabezado de la primera columna -->
-      <xpath expr="//field[@name='order_line']//list//field[@name='product_id']" position="attributes">
-        <attribute name="string">Descripción</attribute>
+      <!-- 1) DESCRIPCIÓN -->
+      <xpath expr="//field[@name='order_line']//*[self::list]//field[@name='product_id']" position="attributes">
+        <attribute name="string">DESCRIPCIÓN</attribute>
       </xpath>
 
-      <xpath expr="//field[@name='order_line']//list//field[@name='product_id']" position="after">
-        <field name="cer_participants" string="Cantidad de Personas" optional="show"/>
-        <field name="cer_duration_display" string="Noches y/o Días" optional="show"/>
-      </xpath>
-
-      <!-- Ocultar la cantidad estándar -->
-      <xpath expr="//field[@name='order_line']//list//field[@name='product_uom_qty']" position="attributes">
+      <!-- 2) Ocultar la cantidad (qty): en CER se trabaja con personas + duración -->
+      <xpath expr="//field[@name='order_line']//*[self::list]//field[@name='product_uom_qty']" position="attributes">
+        <attribute name="invisible">1</attribute>
         <attribute name="optional">hide</attribute>
       </xpath>
 
-      <!-- Reemplazar precio unitario por precio unitario SIN IVA -->
-      <xpath expr="//field[@name='order_line']//list//field[@name='price_unit']" position="replace">
-        <field name="cer_price_unit_excl_tax" string="Precio unitario" optional="show"/>
+      <!-- 3) Insertar columnas CER: Personas + Noches/Días -->
+      <xpath expr="//field[@name='order_line']//*[self::list]//field[@name='product_id']" position="after">
+        <field name="cer_participants" string="CANTIDAD DE PERSONAS" optional="show"/>
+        <field name="cer_duration_display" string="NOCHES Y/O DÍAS" optional="show" readonly="1"/>
       </xpath>
 
-      <!-- Quitar 'Importe' y mostrar solo Precio total -->
-      <xpath expr="//field[@name='order_line']//list//field[@name='price_subtotal']" position="replace">
-        <field name="price_total" string="Precio total" optional="show"/>
+      <!-- 4) Precio unitario (sin IVA): reemplazar el estándar -->
+      <xpath expr="//field[@name='order_line']//*[self::list]//field[@name='price_unit']" position="replace">
+        <field name="cer_price_unit_excl_tax" string="PRECIO UNITARIO" optional="show" readonly="1"/>
       </xpath>
 
-      <!-- Campos técnicos CER ocultos -->
-      <xpath expr="//field[@name='order_line']//list//field[@name='product_uom_qty']" position="after">
-        <field name="cer_auto_qty" optional="hide"/>
-        <field name="cer_apply_discount" optional="hide"/>
-        <field name="cer_nights" optional="hide" readonly="1"/>
-        <field name="cer_days" optional="hide" readonly="1"/>
-        <field name="cer_qty_computed" optional="hide" readonly="1"/>
-        <field name="cer_season_id" optional="hide" readonly="1"/>
+      <!-- 5) Impuestos: ocultar SIEMPRE en grilla (el PDF no los muestra como columna) -->
+      <xpath expr="//field[@name='order_line']//*[self::list]//field[@name='tax_ids']" position="attributes">
+        <attribute name="invisible">1</attribute>
+        <attribute name="optional">hide</attribute>
+      </xpath>
+
+      <!-- 6) PRECIO TOTAL: usar subtotal (sin IVA) y renombrar 'Importe' -->
+      <xpath expr="//field[@name='order_line']//*[self::list]//field[@name='price_subtotal']" position="attributes">
+        <attribute name="string">PRECIO TOTAL</attribute>
+        <attribute name="optional">show</attribute>
+        <attribute name="sum">PRECIO TOTAL</attribute>
+      </xpath>
+
+      <!-- 7) Ocultar total con IVA (para evitar duplicados) -->
+      <xpath expr="//field[@name='order_line']//*[self::list]//field[@name='price_total']" position="attributes">
+        <attribute name="invisible">1</attribute>
+        <attribute name="optional">hide</attribute>
       </xpath>
 
     </field>

@@ -1,70 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-  <template id="report_saleorder_document_inherit_cer_pricing" inherit_id="sale.report_saleorder_document">
-    <xpath expr="/t" position="replace">
-      <t t-foreach="docs" t-as="order">
-        <t t-call="web.external_layout">
-<div class="page">
-          <!-- Encabezado CER -->
-          <div class="mt-2 mb-2">
-            <t t-if="order._fields.get('cer_date_from') and order.cer_date_from">
-              <div><strong>Fecha Entrada</strong>: <span t-field="order.cer_date_from"/></div>
-            </t>
-            <t t-if="order._fields.get('cer_date_to') and order.cer_date_to">
-              <div><strong>Fecha Salida</strong>: <span t-field="order.cer_date_to"/></div>
-            </t>
-            <t t-if="order._fields.get('cer_stay_display') and order.cer_stay_display">
-              <div><strong>Estadía</strong>: <span t-esc="order.cer_stay_display"/></div>
-            </t>
-            <t t-if="order._fields.get('cer_participants') and order.cer_participants">
-              <div><strong>Participantes</strong>: <span t-esc="order.cer_participants"/></div>
-            </t>
-            <t t-if="order._fields.get('cer_discount_id') and order.cer_discount_id">
-              <div><strong>Descuento</strong>: <span t-esc="str(order.cer_discount_id.discount_percent) + '%'"/></div>
-            </t>
-          </div>
+    <!--
+      CER - Personalización del PDF de cotización (sale.report_saleorder_document) para Odoo 19.0 CE
 
-          <!-- Tabla CER -->
-          <table class="table table-sm o_main_table">
-            <thead>
-              <tr>
-                <th class="text-start">DESCRIPCIÓN</th>
-                <th class="text-end">CANTIDAD DE PERSONAS</th>
-                <th class="text-end">NOCHES Y/O DÍAS</th>
-                <th class="text-end">PRECIO UNITARIO</th>
-                <th class="text-end">PRECIO TOTAL</th>
-              </tr>
-            </thead>
-            <tbody>
-              <t t-foreach="order.order_line" t-as="l">
-                <t t-if="l.display_type == 'line_section'">
-                  <tr class="o_line_section">
-                    <td colspan="5"><strong t-field="l.name"/></td>
-                  </tr>
-                </t>
-                <t t-elif="l.display_type == 'line_note'">
-                  <tr class="o_line_note">
-                    <td colspan="5"><em t-field="l.name"/></td>
-                  </tr>
+      Objetivo:
+      - Mantener encabezado estándar (Número, fechas, vendedor, etc.)
+      - Reemplazar SOLO:
+          * Bloque informativo CER antes de la tabla
+          * Tabla principal por tabla CER (5 columnas)
+          * Filas de totales por "Monto neto / IVA % / Total"
+
+      Nota técnica:
+      - En Odoo 17+ los totales se suelen renderizar con document_tax_totals (account/sale).
+        Para evitar XPaths frágiles por versión, reemplazamos el t-call que contenga "document_tax_totals".
+      - Usamos hasclass() en xpaths para evitar warnings.
+    -->
+
+    <!-- Filas (TR) de totales CER: se inyectan dentro de la tabla de totales existente -->
+    <template id="report_saleorder_totals_cer_rows">
+        <t t-set="tax_percent" t-value="False"/>
+        <t t-set="first_line" t-value="doc.order_line.filtered(lambda l: not l.display_type)[:1]"/>
+        <t t-set="first_tax" t-value="first_line and first_line.tax_id[:1] or False"/>
+        <t t-if="first_tax and first_tax.amount_type == 'percent'">
+            <t t-set="tax_percent" t-value="first_tax.amount"/>
+        </t>
+        <t t-set="tax_percent_str" t-value="tax_percent and ('{:g}'.format(tax_percent)) or ''"/>
+
+        <tr>
+            <td class="text-end">
+                <span>Monto neto</span>
+            </td>
+            <td class="text-end">
+                <span t-field="doc.amount_untaxed"/>
+            </td>
+        </tr>
+        <tr class="border-top">
+            <td class="text-end">
+                <t t-if="tax_percent_str">
+                    <span t-esc="'IVA %s%% en' % tax_percent_str"/>
                 </t>
                 <t t-else="">
-                  <tr>
-                    <td class="text-start"><span t-field="l.name"/></td>
-                    <td class="text-end"><span t-esc="l.cer_participants or ''"/></td>
-                    <td class="text-end"><span t-esc="l.cer_duration_display or ''"/></td>
-                    <td class="text-end"><span t-field="l.cer_price_unit_excl_tax"/></td>
-                    <td class="text-end"><span t-field="l.price_total"/></td>
-                  </tr>
+                    <span>Impuestos</span>
                 </t>
-              </t>
-            </tbody>
-          </table>
+            </td>
+            <td class="text-end">
+                <span t-field="doc.amount_tax"/>
+            </td>
+        </tr>
+        <tr class="border-top">
+            <td class="text-end">
+                <strong>Total</strong>
+            </td>
+            <td class="text-end">
+                <strong t-field="doc.amount_total"/>
+            </td>
+        </tr>
+    </template>
 
-          <!-- Totales: reusar bloque estándar -->
-          <t t-call="sale.report_saleorder_totals"/>
-        </div>
-        </t>
-      </t>
-    </xpath>
-  </template>
+    <template id="report_saleorder_document_inherit_cer_pricing" inherit_id="sale.report_saleorder_document">
+
+        <!-- Bloque CER: se inserta justo antes de la tabla principal -->
+        <xpath expr="//table[hasclass('o_main_table')]" position="before">
+            <div class="mt-2 mb-2">
+                <t t-if="doc._fields.get('cer_date_from') and doc.cer_date_from">
+                    <div><strong>Fecha Entrada</strong>: <span t-field="doc.cer_date_from"/></div>
+                </t>
+                <t t-if="doc._fields.get('cer_date_to') and doc.cer_date_to">
+                    <div><strong>Fecha Salida</strong>: <span t-field="doc.cer_date_to"/></div>
+                </t>
+                <t t-if="doc._fields.get('cer_stay_display') and doc.cer_stay_display">
+                    <div><strong>Estadía</strong>: <span t-esc="doc.cer_stay_display"/></div>
+                </t>
+                <t t-if="doc._fields.get('cer_participants') and doc.cer_participants">
+                    <div><strong>Participantes</strong>: <span t-esc="doc.cer_participants"/></div>
+                </t>
+                <t t-if="doc._fields.get('cer_discount_id') and doc.cer_discount_id">
+                    <div><strong>Descuento</strong>: <span t-esc="str(doc.cer_discount_id.discount_percent) + '%'"/></div>
+                </t>
+            </div>
+        </xpath>
+
+        <!-- Reemplazar la tabla estándar por la tabla CER (como en tus capturas) -->
+        <xpath expr="//table[hasclass('o_main_table')]" position="replace">
+            <table class="table table-sm o_main_table">
+                <thead>
+                    <tr>
+                        <th class="text-start">DESCRIPCIÓN</th>
+                        <th class="text-end">CANTIDAD DE PERSONAS</th>
+                        <th class="text-end">NOCHES Y/O DÍAS</th>
+                        <th class="text-end">PRECIO UNITARIO</th>
+                        <th class="text-end">PRECIO TOTAL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="doc.order_line" t-as="l">
+                        <t t-if="l.display_type == 'line_section'">
+                            <tr class="o_line_section">
+                                <td colspan="5"><strong t-field="l.name"/></td>
+                            </tr>
+                        </t>
+                        <t t-elif="l.display_type == 'line_note'">
+                            <tr class="o_line_note">
+                                <td colspan="5"><em t-field="l.name"/></td>
+                            </tr>
+                        </t>
+                        <t t-else="">
+                            <tr>
+                                <td class="text-start">
+                                    <span t-field="l.name"/>
+                                </td>
+                                <td class="text-end">
+                                    <span t-esc="l.cer_participants or 0"/>
+                                </td>
+                                <td class="text-end">
+                                    <span t-esc="l.cer_duration_display or ''"/>
+                                </td>
+                                <td class="text-end">
+                                    <span t-field="l.cer_price_unit_excl_tax"/>
+                                </td>
+                                <td class="text-end">
+                                    <span t-field="l.price_total"/>
+                                </td>
+                            </tr>
+                        </t>
+                    </t>
+                </tbody>
+            </table>
+        </xpath>
+
+        <!-- Totales: reemplazar el motor de totales por filas CER.
+             Buscamos cualquier t-call que contenga 'document_tax_totals' (account/sale). -->
+        <xpath expr="//t[contains(@t-call, 'document_tax_totals')]" position="replace">
+            <t t-call="cer_pricing.report_saleorder_totals_cer_rows"/>
+        </xpath>
+
+    </template>
 </odoo>

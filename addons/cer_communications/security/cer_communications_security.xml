@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <!-- Regla multi-company para reglas de comunicación -->
+    <record id="rule_cer_communication_rule_company" model="ir.rule">
+      <field name="name">CER Communication Rule multi-company</field>
+      <field name="model_id" ref="model_cer_communication_rule"/>
+      <field name="domain_force">[('company_id','in',company_ids)]</field>
+      <field name="groups" eval="[(4, ref('cer_base.group_cer_user'))]"/>
+    </record>
+
+  </data>
+</odoo>

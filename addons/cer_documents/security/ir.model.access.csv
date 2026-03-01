@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cer_document_template_user,CER document template (user),model_cer_document_template,cer_base.group_cer_user,1,0,0,0
+access_cer_document_template_manager,CER document template (manager),model_cer_document_template,cer_base.group_cer_manager,1,1,1,1
+access_cer_document_user,CER document (user),model_cer_document,cer_base.group_cer_user,1,0,0,0
+access_cer_document_manager,CER document (manager),model_cer_document,cer_base.group_cer_manager,1,1,1,1
+access_cer_document_create_wizard_manager,CER document create wizard (manager),model_cer_document_create_wizard,cer_base.group_cer_manager,1,1,1,0

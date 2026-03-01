@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cer_communication_rule_user,access.cer.communication.rule.user,model_cer_communication_rule,cer_base.group_cer_user,1,0,0,0
+access_cer_communication_rule_manager,access.cer.communication.rule.manager,model_cer_communication_rule,cer_base.group_cer_manager,1,1,1,1

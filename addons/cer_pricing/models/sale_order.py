@@ -18,15 +18,23 @@ class SaleOrder(models.Model):
 
     @api.depends("cer_date_from", "cer_date_to")
     def _compute_cer_stay(self):
+        """
+        Regla definitiva:
+          - Noches = (Salida - Entrada) (no inclusivo)
+          - Días   = Noches + 1 (inclusivo)
+
+        Ejemplo:
+          Entrada 10 / Salida 11 => Noches=1, Días=2
+        """
         for order in self:
-            if order.cer_date_from and order.cer_date_to:
-                nights = max(0, int((order.cer_date_to - order.cer_date_from).days))
-                days = max(1, nights + 1)
+            if order.cer_date_from and order.cer_date_to and order.cer_date_to >= order.cer_date_from:
+                nights = (order.cer_date_to - order.cer_date_from).days
+                days = nights + 1
+                order.cer_stay_nights = int(nights)
+                order.cer_stay_days = int(days)
             else:
-                nights = 0
-                days = 0
-            order.cer_stay_nights = nights
-            order.cer_stay_days = days
+                order.cer_stay_nights = 0
+                order.cer_stay_days = 0
 
     @api.depends("cer_stay_days")
     def _compute_cer_stay_display(self):
@@ -56,12 +64,16 @@ class SaleOrder(models.Model):
         Season = self.env["cer.pricing.season"]
         if not self.cer_date_from:
             return Season.browse()
-        return Season.search([
-            ("active", "=", True),
-            ("company_id", "=", self.company_id.id),
-            ("date_from", "<=", self.cer_date_from),
-            ("date_to", ">=", self.cer_date_from),
-        ], order="priority desc, id desc", limit=1)
+        return Season.search(
+            [
+                ("active", "=", True),
+                ("company_id", "=", self.company_id.id),
+                ("date_from", "<=", self.cer_date_from),
+                ("date_to", ">=", self.cer_date_from),
+            ],
+            order="priority desc, id desc",
+            limit=1,
+        )
 
     def _cer_sync_lines(self):
         """Recalcula (en memoria) cantidades CER y aplica tarifa/temporada + descuento a las líneas."""
@@ -78,12 +90,14 @@ class SaleOrder(models.Model):
             rate_map = {}
             if season:
                 tmpl_ids = list(set(lines.mapped("product_id.product_tmpl_id").ids))
-                rates = Rate.search([
-                    ("active", "=", True),
-                    ("company_id", "=", order.company_id.id),
-                    ("season_id", "=", season.id),
-                    ("product_tmpl_id", "in", tmpl_ids),
-                ])
+                rates = Rate.search(
+                    [
+                        ("active", "=", True),
+                        ("company_id", "=", order.company_id.id),
+                        ("season_id", "=", season.id),
+                        ("product_tmpl_id", "in", tmpl_ids),
+                    ]
+                )
                 rate_map = {r.product_tmpl_id.id: r.price for r in rates}
 
             discount_pct = float(order.cer_discount_id.discount_percent) if order.cer_discount_id else 0.0
@@ -101,20 +115,37 @@ class SaleOrder(models.Model):
                     line.discount = discount_pct
 
                 # Recalcula cantidad interna según modo (sin necesidad de wizard)
-                if line.cer_auto_qty and order.cer_date_from and order.cer_date_to:
+                if order.cer_date_from and order.cer_date_to:
                     participants = int(line.cer_participants or order.cer_participants or 0)
+                    effective_charge_mode = line.cer_charge_mode or "fixed"
+
+                    # Camping por día (persona x día)
+                    if line.product_id.default_code == "CAMP_DAY":
+                        effective_charge_mode = "person_day"
+
                     payload = Engine.compute_line_payload(
-                        charge_mode=line.cer_charge_mode or "fixed",
+                        charge_mode=effective_charge_mode,
                         participants=participants,
                         min_people=line.cer_min_people or 0,
                         date_from=order.cer_date_from,
                         date_to=order.cer_date_to,
                     )
-                    line.product_uom_qty = payload.get("qty", line.product_uom_qty)
+                    computed_qty = payload.get("qty", line.product_uom_qty)
+
+                    # Siempre actualizar informativos (Noche/Día) aunque la qty sea manual
                     line.cer_qty_computed = payload.get("qty", 0.0)
                     line.cer_nights = payload.get("nights", 0)
                     line.cer_days = payload.get("days", 0)
                     line.cer_participants = payload.get("participants", participants)
+
+                    # Solo forzar Cantidad si está activada la qty automática
+                    if line.cer_auto_qty:
+                        line.product_uom_qty = computed_qty
+                else:
+                    # Sin fechas: limpiar informativos para evitar datos antiguos
+                    line.cer_qty_computed = 0.0
+                    line.cer_nights = 0
+                    line.cer_days = 0
 
     def write(self, vals):
         res = super().write(vals)

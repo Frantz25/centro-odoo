@@ -1,0 +1,30 @@
+# -*- coding: utf-8 -*-
+{
+    "name": "CER Communications",
+    "version": "19.0.1.0.2",
+    "category": "Tools",
+    "summary": "Mensajería y notificaciones CER (reglas + plantillas + disparadores)",
+    "author": "CER",
+    "license": "LGPL-3",
+    "depends": [
+        "base",
+        "mail",
+        "sale",
+        "portal",
+        "cer_base",
+        "cer_booking",
+        "cer_catalog_github",
+        "cer_documents",
+    ],
+    "data": [
+        "security/cer_communications_security.xml",
+        "security/ir.model.access.csv",
+        "views/cer_communication_rule_views.xml",
+        "views/cer_communications_menus.xml",
+        "data/mail_templates.xml",
+        "data/default_rules.xml",
+        "data/cron.xml",
+    ],
+    "installable": True,
+    "application": False,
+}

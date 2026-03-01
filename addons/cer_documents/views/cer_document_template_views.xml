@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_cer_document_template_list" model="ir.ui.view">
+    <field name="name">cer.document.template.list</field>
+    <field name="model">cer.document.template</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="active"/>
+        <field name="name"/>
+        <field name="company_id"/>
+        <field name="model_id"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_cer_document_template_form" model="ir.ui.view">
+    <field name="name">cer.document.template.form</field>
+    <field name="model">cer.document.template</field>
+    <field name="arch" type="xml">
+      <form string="Plantilla CER">
+        <sheet>
+          <group>
+            <group>
+              <field name="active"/>
+              <field name="company_id"/>
+              <field name="name"/>
+              <field name="model_id"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Contenido">
+              <field name="body_html" widget="html"/>
+              <div class="text-muted mt-2">
+                Usa placeholders: <code>{{name}}</code>, <code>{{partner_id.name}}</code>, <code>{{amount_total}}</code>, etc.
+              </div>
+            </page>
+            <page string="Notas">
+              <field name="note"/>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_cer_document_templates" model="ir.actions.act_window">
+    <field name="name">Plantillas</field>
+    <field name="res_model">cer.document.template</field>
+    <field name="view_mode">list,form</field>
+  </record>
+</odoo>

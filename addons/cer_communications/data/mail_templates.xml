@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data noupdate="1">
+
+    <record id="mail_template_cer_booking_reserved" model="mail.template">
+      <field name="name">CER - Reserva reservada</field>
+      <field name="model_id" ref="sale.model_sale_order"/>
+      <field name="subject">Reserva reservada: ${object.name}</field>
+      <field name="body_html"><![CDATA[
+        <div>
+          <p>Hola,</p>
+          <p>Tu reserva ha sido <strong>reservada</strong>.</p>
+          <ul>
+            <li><strong>Referencia</strong>: ${object.name}</li>
+            <li><strong>Entrada</strong>: ${object.cer_date_from or ''}</li>
+            <li><strong>Salida</strong>: ${object.cer_date_to or ''}</li>
+            <li><strong>Participantes</strong>: ${object.cer_participants or 0}</li>
+            <li><strong>Total</strong>: ${format_amount(object.amount_total, object.currency_id)}</li>
+          </ul>
+          <p>Gracias.</p>
+        </div>
+      ]]></field>
+    </record>
+
+    <record id="mail_template_cer_booking_confirmed" model="mail.template">
+      <field name="name">CER - Reserva confirmada</field>
+      <field name="model_id" ref="sale.model_sale_order"/>
+      <field name="subject">Reserva confirmada: ${object.name}</field>
+      <field name="body_html"><![CDATA[
+        <div>
+          <p>Hola,</p>
+          <p>Tu reserva ha sido <strong>confirmada</strong>.</p>
+          <ul>
+            <li><strong>Referencia</strong>: ${object.name}</li>
+            <li><strong>Entrada</strong>: ${object.cer_date_from or ''}</li>
+            <li><strong>Salida</strong>: ${object.cer_date_to or ''}</li>
+            <li><strong>Total</strong>: ${format_amount(object.amount_total, object.currency_id)}</li>
+          </ul>
+        </div>
+      ]]></field>
+    </record>
+
+    <record id="mail_template_cer_booking_cancelled" model="mail.template">
+      <field name="name">CER - Reserva cancelada</field>
+      <field name="model_id" ref="sale.model_sale_order"/>
+      <field name="subject">Reserva cancelada: ${object.name}</field>
+      <field name="body_html"><![CDATA[
+        <div>
+          <p>Hola,</p>
+          <p>Tu reserva ha sido <strong>cancelada</strong>.</p>
+          <ul>
+            <li><strong>Referencia</strong>: ${object.name}</li>
+            <li><strong>Entrada</strong>: ${object.cer_date_from or ''}</li>
+            <li><strong>Salida</strong>: ${object.cer_date_to or ''}</li>
+          </ul>
+        </div>
+      ]]></field>
+    </record>
+
+    <record id="mail_template_cer_sale_validity_reminder" model="mail.template">
+      <field name="name">CER - Recordatorio vigencia cotización</field>
+      <field name="model_id" ref="sale.model_sale_order"/>
+      <field name="subject">Recordatorio: vigencia de tu cotización ${object.name}</field>
+      <field name="body_html"><![CDATA[
+        <div>
+          <p>Hola,</p>
+          <p>Te recordamos que la cotización <strong>${object.name}</strong> vence el <strong>${object.validity_date or ''}</strong>.</p>
+          <p>Total: <strong>${format_amount(object.amount_total, object.currency_id)}</strong></p>
+        </div>
+      ]]></field>
+    </record>
+
+    <record id="mail_template_cer_catalog_sync_failed" model="mail.template">
+      <field name="name">CER - Catálogo sync falló</field>
+      <field name="model_id" ref="cer_catalog_github.model_cer_catalog_sync_log"/>
+      <field name="subject">Catálogo CER: Sync falló (${object.company_id.name})</field>
+      <field name="body_html"><![CDATA[
+        <div>
+          <p>Sync de catálogo <strong>falló</strong>.</p>
+          <ul>
+            <li><strong>Fuente</strong>: ${object.source_id.name if object.source_id else ''}</li>
+            <li><strong>Archivo</strong>: ${object.filename or ''}</li>
+            <li><strong>URL</strong>: ${object.url or ''}</li>
+            <li><strong>Error</strong>: ${object.error_message or ''}</li>
+          </ul>
+        </div>
+      ]]></field>
+    </record>
+
+    <record id="mail_template_cer_catalog_sync_success" model="mail.template">
+      <field name="name">CER - Catálogo sync OK</field>
+      <field name="model_id" ref="cer_catalog_github.model_cer_catalog_sync_log"/>
+      <field name="subject">Catálogo CER: Sync OK (${object.company_id.name})</field>
+      <field name="body_html"><![CDATA[
+        <div>
+          <p>Sync de catálogo <strong>exitoso</strong>.</p>
+          <ul>
+            <li><strong>Fuente</strong>: ${object.source_id.name if object.source_id else ''}</li>
+            <li><strong>Archivo</strong>: ${object.filename or ''}</li>
+            <li><strong>Creados</strong>: ${object.created_count or 0}</li>
+            <li><strong>Actualizados</strong>: ${object.updated_count or 0}</li>
+            <li><strong>Omitidos</strong>: ${object.skipped_count or 0}</li>
+          </ul>
+        </div>
+      ]]></field>
+    </record>
+
+    <record id="mail_template_cer_document_finalized" model="mail.template">
+      <field name="name">CER - Documento finalizado</field>
+      <field name="model_id" ref="cer_documents.model_cer_document"/>
+      <field name="subject">Documento CER finalizado: ${object.name}</field>
+      <field name="body_html"><![CDATA[
+        <div>
+          <p>Documento CER <strong>finalizado</strong>.</p>
+          <ul>
+            <li><strong>Documento</strong>: ${object.name}</li>
+            <li><strong>Plantilla</strong>: ${object.template_id.name if object.template_id else ''}</li>
+            <li><strong>Origen</strong>: ${object.res_model or ''} / ${object.res_id or ''}</li>
+          </ul>
+        </div>
+      ]]></field>
+    </record>
+
+  </data>
+</odoo>

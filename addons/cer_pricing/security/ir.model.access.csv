@@ -1,7 +1,8 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_cer_pricing_season_user,CER pricing season (user),model_cer_pricing_season,cer_base.group_cer_user,1,0,0,0
-access_cer_pricing_season_manager,CER pricing season (manager),model_cer_pricing_season,cer_base.group_cer_manager,1,1,1,1
-access_cer_pricing_rate_user,CER pricing rate (user),model_cer_pricing_rate,cer_base.group_cer_user,1,0,0,0
-access_cer_pricing_rate_manager,CER pricing rate (manager),model_cer_pricing_rate,cer_base.group_cer_manager,1,1,1,1
-access_cer_pricing_discount_user,CER pricing discount (user),model_cer_pricing_discount,cer_base.group_cer_user,1,0,0,0
+access_cer_pricing_apply_wizard_manager,CER pricing wizard (manager),model_cer_pricing_apply_wizard,cer_base.group_cer_manager,1,1,1,0
 access_cer_pricing_discount_manager,CER pricing discount (manager),model_cer_pricing_discount,cer_base.group_cer_manager,1,1,1,1
+access_cer_pricing_discount_user,CER pricing discount (user),model_cer_pricing_discount,cer_base.group_cer_user,1,0,0,0
+access_cer_pricing_rate_manager,CER pricing rate (manager),model_cer_pricing_rate,cer_base.group_cer_manager,1,1,1,1
+access_cer_pricing_rate_user,CER pricing rate (user),model_cer_pricing_rate,cer_base.group_cer_user,1,0,0,0
+access_cer_pricing_season_manager,CER pricing season (manager),model_cer_pricing_season,cer_base.group_cer_manager,1,1,1,1
+access_cer_pricing_season_user,CER pricing season (user),model_cer_pricing_season,cer_base.group_cer_user,1,0,0,0
