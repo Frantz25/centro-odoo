@@ -217,3 +217,7 @@ odoo_pg_pass
 *.pem
 *.key
 config/odoo.local.conf
+
+# server-only
+config/odoo.conf
+odoo_pg_pass
