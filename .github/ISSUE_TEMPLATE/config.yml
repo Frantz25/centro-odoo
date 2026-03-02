@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Soporte CER interno
+    url: https://github.com/Frantz25/centro-odoo/discussions
+    about: Usa Discussions para preguntas generales y soporte funcional.

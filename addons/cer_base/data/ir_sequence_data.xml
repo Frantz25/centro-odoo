@@ -1,11 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo noupdate="1">
-  <record id="seq_cer_base_generic" model="ir.sequence">
-    <field name="name">CER - Genérica</field>
-    <field name="code">cer.base</field>
-    <field name="prefix">CER/%(year)s/</field>
-    <field name="padding">5</field>
-    <field name="company_id" eval="False"/>
-  </record>
-</odoo>
+<odoo>
+  <data noupdate="1">
+    <record id="seq_cer_base_generic" model="ir.sequence">
+      <field name="name">CER - Genérica</field>
+      <field name="code">cer.base</field>
+      <field name="prefix">CER/%(year)s/</field>
+      <field name="padding">5</field>
+      <field name="company_id" eval="False"/>
+    </record>
 
+    <record id="seq_cer_booking" model="ir.sequence">
+      <field name="name">CER Booking</field>
+      <field name="code">cer.booking</field>
+      <field name="prefix">CER-BOOK-</field>
+      <field name="padding">6</field>
+      <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_cer_ticket" model="ir.sequence">
+      <field name="name">CER Ticket</field>
+      <field name="code">cer.ticket</field>
+      <field name="prefix">CER-TKT-</field>
+      <field name="padding">6</field>
+      <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_cer_quote_request" model="ir.sequence">
+      <field name="name">CER Quote Request</field>
+      <field name="code">cer.quote.request</field>
+      <field name="prefix">CER-REQ-</field>
+      <field name="padding">6</field>
+      <field name="company_id" eval="False"/>
+    </record>
+  </data>
+</odoo>

@@ -209,9 +209,11 @@ __marimo__/
 # macOS
 .DS_Store
 **/.DS_Store
+__MACOSX/
+**/._*
 
-.DS_Store
-**/.DS_Store
-
-.DS_Store
-**/.DS_Store
+# Secrets / local runtime config
+odoo_pg_pass
+*.pem
+*.key
+config/odoo.local.conf
