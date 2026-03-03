@@ -226,7 +226,8 @@ class SaleOrder(models.Model):
                 order.cer_booking_name = booking.booking_code
 
     def action_confirm(self):
-        booking_orders = self.filtered("cer_is_booking")
+        # Consideramos reserva CER por flag explícita o por huella de reserva previa.
+        booking_orders = self.filtered(lambda o: o.cer_is_booking or o.cer_booking_id or o.cer_booking_name)
 
         # A1: validaciones previas obligatorias para evitar confirmar ventas inválidas.
         for order in booking_orders:
