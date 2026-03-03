@@ -107,7 +107,7 @@ class CERDocument(models.Model):
     def _attach_pdf_and_post_trace(self):
         self.ensure_one()
         report = self.env.ref("cer_documents.action_report_cer_document")
-        pdf_content, _ = report._render_qweb_pdf(self.ids)
+        pdf_content, _ = report._render_qweb_pdf(report.report_name, self.ids)
         filename = "%s.pdf" % (self.number or self.name or "documento_cer")
 
         origin = self.env[self.res_model].browse(self.res_id).exists()
