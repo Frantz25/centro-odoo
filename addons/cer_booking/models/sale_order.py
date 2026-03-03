@@ -26,6 +26,7 @@ class SaleOrder(models.Model):
     )
 
     cer_booking_name = fields.Char(string="N° Reserva", copy=False, readonly=True, index=True)
+    cer_booking_id = fields.Many2one("cer.booking", string="Reserva CER", copy=False, readonly=True)
 
     cer_booking_overbooking = fields.Boolean(
         string="Permitir sobre-reserva",
@@ -142,6 +143,22 @@ class SaleOrder(models.Model):
                 if order.cer_is_booking and order.cer_booking_state in ("reserved", "confirmed") and not order.cer_booking_overbooking:
                     order._cer_check_availability()
 
+        return res
+
+    def _cer_ensure_booking_created(self):
+        """Crea reserva CER al confirmar (idempotente)."""
+        Booking = self.env["cer.booking"]
+        for order in self:
+            if not order.cer_is_booking:
+                continue
+            booking = Booking.create_from_sale_order(order)
+            order.cer_booking_id = booking.id
+            if not order.cer_booking_name:
+                order.cer_booking_name = booking.booking_code
+
+    def action_confirm(self):
+        res = super().action_confirm()
+        self._cer_ensure_booking_created()
         return res
 
     def _cer_booking_assign_number(self):
