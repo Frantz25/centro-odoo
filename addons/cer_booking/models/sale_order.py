@@ -45,7 +45,7 @@ class SaleOrder(models.Model):
             if order.cer_booking_qr_url:
                 encoded = quote(order.cer_booking_qr_url, safe="")
                 order.cer_booking_qr_html = (
-                    f"<img src='/report/barcode/?type=QR&value={encoded}&width=180&height=180' "
+                    f"<img src='/report/barcode/QR/{encoded}?width=180&height=180' "
                     "style='max-width:180px;max-height:180px;'/>"
                 )
             else:
