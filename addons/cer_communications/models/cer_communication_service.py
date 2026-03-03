@@ -6,6 +6,7 @@ from datetime import timedelta
 from odoo import api, fields, models, _
 
 ICP_REMINDER_DAYS_KEY = "cer_communications.validity_reminder_days"
+ICP_PRECHECKIN_HOURS_KEY = "cer_communications.precheckin_hours"
 
 
 class CERCommunicationService(models.AbstractModel):
@@ -154,3 +155,24 @@ class CERCommunicationService(models.AbstractModel):
             ]
         )
         return self.trigger("sale_validity_reminder", orders)
+
+    @api.model
+    def cron_send_precheckin_reminders(self):
+        SaleOrder = self.env["sale.order"]
+        today = fields.Date.context_today(self)
+
+        company = self.env.company
+        # por ahora operamos por día (24h = 1 día), extensible a horas después
+        hours = int(self._get_param(ICP_PRECHECKIN_HOURS_KEY, 24, company=company) or 24)
+        days_before = 1 if hours <= 24 else max(1, round(hours / 24))
+        target_date = today + timedelta(days=days_before)
+
+        orders = SaleOrder.search(
+            [
+                ("company_id", "=", company.id),
+                ("cer_is_booking", "=", True),
+                ("cer_booking_state", "=", "confirmed"),
+                ("cer_date_from", "=", target_date),
+            ]
+        )
+        return self.trigger("pre_checkin_reminder", orders)

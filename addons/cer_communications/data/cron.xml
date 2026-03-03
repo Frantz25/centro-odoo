@@ -12,5 +12,15 @@
       <field name="active">True</field>
     </record>
 
+    <record id="ir_cron_cer_precheckin_reminder" model="ir.cron">
+      <field name="name">CER: Recordatorio pre check-in</field>
+      <field name="model_id" ref="cer_communications.model_cer_communication_service"/>
+      <field name="state">code</field>
+      <field name="code">model.cron_send_precheckin_reminders()</field>
+      <field name="interval_number">1</field>
+      <field name="interval_type">days</field>
+      <field name="active">True</field>
+    </record>
+
   </data>
 </odoo>

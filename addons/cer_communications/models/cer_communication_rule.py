@@ -12,6 +12,7 @@ EVENT_SELECTION = [
     ("catalog_sync_failed", "Catálogo - Sync Falló"),
     ("document_finalized", "Documento - Finalizado"),
     ("sale_validity_reminder", "Cotización - Recordatorio Vigencia"),
+    ("pre_checkin_reminder", "Reserva - Recordatorio Pre Check-in"),
     ("sale_portal_accepted", "Portal - Aceptada"),
     ("sale_portal_rejected", "Portal - Rechazada"),
 ]
