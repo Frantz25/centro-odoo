@@ -47,25 +47,12 @@
 
       <!-- Booking fields near top -->
       <xpath expr="//sheet//div[@class='oe_title']" position="after">
-        <group invisible="not cer_is_booking" col="2">
+        <group invisible="not cer_is_booking">
           <group>
             <field name="cer_booking_name" readonly="1"/>
             <field name="cer_booking_state" readonly="1"/>
-            <field name="cer_booking_qr_html" widget="html" readonly="1"/>
           </group>
-          <group name="cer_booking_summary_top"/>
         </group>
-      </xpath>
-
-      <!-- Mover resumen al bloque superior (sin duplicar) -->
-      <xpath expr="//group[@name='cer_booking_summary_top']" position="inside">
-        <xpath expr="//field[@name='cer_date_from']" position="move"/>
-        <xpath expr="//field[@name='cer_date_to']" position="move"/>
-        <xpath expr="//field[@name='cer_stay_days']" position="move"/>
-        <xpath expr="//field[@name='cer_participants']" position="move"/>
-        <xpath expr="//field[@name='date_order']" position="move"/>
-        <xpath expr="//field[@name='pricelist_id']" position="move"/>
-        <xpath expr="//field[@name='payment_term_id']" position="move"/>
       </xpath>
 
       <!-- Add units reservation column on order lines -->
