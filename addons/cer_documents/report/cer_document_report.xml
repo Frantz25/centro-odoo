@@ -3,10 +3,15 @@
   <template id="report_cer_document">
     <t t-call="web.external_layout">
       <div class="page">
-        <h2 t-esc="doc.name"/>
-        <p class="text-muted">
-          <span t-esc="doc.number"/> - <span t-esc="doc.create_date"/>
-        </p>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <img src="/cer_documents/static/src/img/logo_cer.png" style="max-height:70px;" alt="Logo CER"/>
+          <div style="text-align:right;">
+            <h3 style="margin:0;" t-esc="doc.name"/>
+            <p class="text-muted" style="margin:0;">
+              <span t-esc="doc.number"/> - <span t-esc="doc.create_date"/>
+            </p>
+          </div>
+        </div>
         <div t-raw="doc.html_content or ''"/>
       </div>
     </t>
