@@ -20,7 +20,7 @@
     <template id="report_saleorder_totals_cer_rows">
         <t t-set="tax_percent" t-value="False"/>
         <t t-set="first_line" t-value="doc.order_line.filtered(lambda l: not l.display_type)[:1]"/>
-        <t t-set="first_tax" t-value="first_line and first_line.tax_id[:1] or False"/>
+        <t t-set="first_tax" t-value="first_line and first_line.tax_ids[:1] or False"/>
         <t t-if="first_tax and first_tax.amount_type == 'percent'">
             <t t-set="tax_percent" t-value="first_tax.amount"/>
         </t>
