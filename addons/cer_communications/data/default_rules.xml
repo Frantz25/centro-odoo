@@ -137,5 +137,17 @@
       <field name="sequence">10</field>
     </record>
 
+    <record id="rule_postevent_followup_customer" model="cer.communication.rule">
+      <field name="name">Post-evento → Cliente</field>
+      <field name="company_id" eval="ref('base.main_company')"/>
+      <field name="model_id" ref="sale.model_sale_order"/>
+      <field name="event_code">post_event_followup</field>
+      <field name="template_id" ref="cer_communications.mail_template_cer_postevent_followup"/>
+      <field name="recipient_mode">customer</field>
+      <field name="channel_email" eval="True"/>
+      <field name="channel_chatter" eval="False"/>
+      <field name="sequence">10</field>
+    </record>
+
   </data>
 </odoo>

@@ -176,6 +176,24 @@
       ]]></field>
     </record>
 
+    <record id="mail_template_cer_postevent_followup" model="mail.template">
+      <field name="name">CER - Gracias por tu visita</field>
+      <field name="model_id" ref="sale.model_sale_order"/>
+      <field name="subject">Gracias por tu visita a CER (${object.cer_booking_name or object.name})</field>
+      <field name="body_html"><![CDATA[
+        <div>
+          <p>Hola ${object.partner_id.name or ''},</p>
+          <p>Gracias por elegir Centro de Entrenamiento y Recreación El Manzano.</p>
+          <p>Nos encantaría conocer tu experiencia y sugerencias para seguir mejorando.</p>
+          <ul>
+            <li><strong>Reserva</strong>: ${object.cer_booking_name or object.name}</li>
+            <li><strong>Estadía</strong>: ${object.cer_date_from or ''} al ${object.cer_date_to or ''}</li>
+          </ul>
+          <p>Si quieres, responde este correo con tu evaluación o completa nuestro formulario interno de feedback.</p>
+        </div>
+      ]]></field>
+    </record>
+
     <record id="mail_template_cer_catalog_sync_failed" model="mail.template">
       <field name="name">CER - Catálogo sync falló</field>
       <field name="model_id" ref="cer_catalog_github.model_cer_catalog_sync_log"/>

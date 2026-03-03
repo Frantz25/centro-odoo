@@ -7,6 +7,7 @@ from odoo import api, fields, models, _
 
 ICP_REMINDER_DAYS_KEY = "cer_communications.validity_reminder_days"
 ICP_PRECHECKIN_HOURS_KEY = "cer_communications.precheckin_hours"
+ICP_POSTEVENT_DELAY_DAYS_KEY = "cer_communications.postevent_delay_days"
 
 
 class CERCommunicationService(models.AbstractModel):
@@ -176,3 +177,22 @@ class CERCommunicationService(models.AbstractModel):
             ]
         )
         return self.trigger("pre_checkin_reminder", orders)
+
+    @api.model
+    def cron_send_postevent_followup(self):
+        SaleOrder = self.env["sale.order"]
+        today = fields.Date.context_today(self)
+
+        company = self.env.company
+        delay_days = int(self._get_param(ICP_POSTEVENT_DELAY_DAYS_KEY, 1, company=company) or 1)
+        target_date = today - timedelta(days=max(delay_days, 0))
+
+        orders = SaleOrder.search(
+            [
+                ("company_id", "=", company.id),
+                ("cer_is_booking", "=", True),
+                ("cer_booking_state", "=", "confirmed"),
+                ("cer_date_to", "=", target_date),
+            ]
+        )
+        return self.trigger("post_event_followup", orders)

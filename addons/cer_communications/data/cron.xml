@@ -22,5 +22,15 @@
       <field name="active">True</field>
     </record>
 
+    <record id="ir_cron_cer_postevent_followup" model="ir.cron">
+      <field name="name">CER: Seguimiento post-evento</field>
+      <field name="model_id" ref="cer_communications.model_cer_communication_service"/>
+      <field name="state">code</field>
+      <field name="code">model.cron_send_postevent_followup()</field>
+      <field name="interval_number">1</field>
+      <field name="interval_type">days</field>
+      <field name="active">True</field>
+    </record>
+
   </data>
 </odoo>

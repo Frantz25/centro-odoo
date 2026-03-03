@@ -13,6 +13,7 @@ EVENT_SELECTION = [
     ("document_finalized", "Documento - Finalizado"),
     ("sale_validity_reminder", "Cotización - Recordatorio Vigencia"),
     ("pre_checkin_reminder", "Reserva - Recordatorio Pre Check-in"),
+    ("post_event_followup", "Reserva - Seguimiento Post-evento"),
     ("sale_portal_accepted", "Portal - Aceptada"),
     ("sale_portal_rejected", "Portal - Rechazada"),
 ]
