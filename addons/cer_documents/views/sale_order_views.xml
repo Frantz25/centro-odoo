@@ -20,6 +20,11 @@
                 string="Creador Documento CER"
                 class="btn-secondary"
                 invisible="state not in ('draft','sent')"/>
+        <button name="action_open_cer_acta_create_wizard"
+                type="object"
+                string="Crear Acta CER"
+                class="btn-secondary"
+                invisible="state not in ('draft','sent')"/>
       </xpath>
 
     </field>
