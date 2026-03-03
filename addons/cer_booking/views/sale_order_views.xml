@@ -47,15 +47,20 @@
 
       <!-- Booking fields near top -->
       <xpath expr="//sheet//div[@class='oe_title']" position="after">
-        <group invisible="not cer_is_booking">
+        <group invisible="not cer_is_booking" col="2">
           <group>
             <field name="cer_booking_name" readonly="1"/>
             <field name="cer_booking_state" readonly="1"/>
+            <field name="cer_booking_qr_html" widget="html" readonly="1"/>
+          </group>
+          <group>
             <field name="cer_date_from" string="Fecha Entrada" readonly="1"/>
             <field name="cer_date_to" string="Fecha Salida" readonly="1"/>
             <field name="cer_stay_days" string="Estadía" readonly="1"/>
             <field name="cer_participants" string="Participantes" readonly="1"/>
-            <field name="cer_booking_qr_html" widget="html" readonly="1"/>
+            <field name="date_order" string="Fecha orden" readonly="1"/>
+            <field name="pricelist_id" string="Tarifa" readonly="1"/>
+            <field name="payment_term_id" string="Términos de pago" readonly="1"/>
           </group>
         </group>
       </xpath>
