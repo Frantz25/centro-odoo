@@ -9,6 +9,7 @@ from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 
 ICP_DEPOSIT_PERCENT_KEY = "cer_base.default_deposit_percent"
+ICP_POLICY_MANDATORY_KEY = "cer_base.policy_mandatory"
 
 
 class SaleOrder(models.Model):
@@ -40,6 +41,10 @@ class SaleOrder(models.Model):
         default=False,
         help="Si está activo, permite reservar aunque la disponibilidad esté excedida (solo managers).",
     )
+
+    cer_policy_accepted = fields.Boolean(string="Políticas aceptadas", copy=False, default=False)
+    cer_policy_accepted_at = fields.Datetime(string="Fecha aceptación políticas", copy=False, readonly=True)
+    cer_policy_accepted_by_partner_id = fields.Many2one("res.partner", string="Aceptado por", copy=False, readonly=True)
 
     @api.depends("cer_booking_qr_url")
     def _compute_cer_booking_qr_html(self):
@@ -92,6 +97,18 @@ class SaleOrder(models.Model):
                     _("No se puede reservar sin abono mínimo. Requerido: %(pct)s%% (%(req).2f). Pagado: %(paid).2f")
                     % {"pct": required_percent, "req": required_amount, "paid": paid_amount}
                 )
+
+    def _cer_is_policy_mandatory(self):
+        val = self.env["ir.config_parameter"].sudo().get_param(ICP_POLICY_MANDATORY_KEY, "False")
+        return str(val).lower() in ("1", "true", "yes", "on")
+
+    def _cer_assert_policy_accepted(self):
+        if not self._cer_is_policy_mandatory():
+            return True
+        for order in self:
+            if order.cer_is_booking and not order.cer_policy_accepted:
+                raise UserError(_("Debes aceptar las políticas del recinto antes de reservar/confirmar."))
+        return True
 
     def _cer_booking_overlap_domain(self, date_from, date_to):
         # Overlap: other_from < date_to AND other_to > date_from
@@ -212,6 +229,7 @@ class SaleOrder(models.Model):
         res = super().action_confirm()
         for order in self.filtered("cer_is_booking"):
             try:
+                order._cer_assert_policy_accepted()
                 order._cer_assert_minimum_deposit_for_reservation()
             except UserError as e:
                 order.message_post(body=_("Pedido confirmado, pero reserva CER bloqueada: %s") % e.args[0])
@@ -219,6 +237,28 @@ class SaleOrder(models.Model):
             order._cer_ensure_booking_created()
             if order.cer_booking_state != "cancelled":
                 order.cer_booking_state = "confirmed"
+        return res
+
+    def action_quotation_accept(self):
+        res = super().action_quotation_accept()
+        booking_orders = self.filtered("cer_is_booking")
+        if booking_orders and "cer.communication.service" in self.env:
+            self.env["cer.communication.service"].trigger("sale_portal_accepted", booking_orders)
+        for order in booking_orders:
+            partner = self.env.user.partner_id if self.env.user else False
+            order.write({
+                "cer_policy_accepted": True,
+                "cer_policy_accepted_at": fields.Datetime.now(),
+                "cer_policy_accepted_by_partner_id": partner.id if partner else False,
+            })
+            try:
+                order._cer_assert_policy_accepted()
+                order._cer_assert_minimum_deposit_for_reservation()
+                order._cer_ensure_booking_created()
+                if order.cer_booking_state != "cancelled":
+                    order.cer_booking_state = "confirmed"
+            except UserError as e:
+                order.message_post(body=_("Cotización aceptada, pero reserva CER pendiente: %s") % e.args[0])
         return res
 
     def _cer_booking_assign_number(self):
@@ -250,6 +290,7 @@ class SaleOrder(models.Model):
             if order.cer_booking_state not in ("draft",):
                 raise UserError(_("Solo puedes reservar desde estado Borrador."))
 
+            order._cer_assert_policy_accepted()
             order._cer_assert_minimum_deposit_for_reservation()
             order._cer_check_availability()
 
@@ -266,6 +307,7 @@ class SaleOrder(models.Model):
             if order.cer_booking_state != "reserved":
                 raise UserError(_("Primero debes dejar la reserva en estado Reservada."))
 
+            order._cer_assert_policy_accepted()
             order._cer_assert_minimum_deposit_for_reservation()
             # Confirmar venta estándar
             order.action_confirm()

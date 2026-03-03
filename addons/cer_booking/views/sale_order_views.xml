@@ -51,6 +51,9 @@
           <group>
             <field name="cer_booking_name" readonly="1"/>
             <field name="cer_booking_state" readonly="1"/>
+            <field name="cer_policy_accepted" readonly="1"/>
+            <field name="cer_policy_accepted_by_partner_id" readonly="1"/>
+            <field name="cer_policy_accepted_at" readonly="1"/>
             <field name="cer_booking_qr_html" widget="html" readonly="1"/>
           </group>
         </group>
