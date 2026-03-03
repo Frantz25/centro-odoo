@@ -230,6 +230,7 @@ class SaleOrder(models.Model):
 
         # A1: validaciones previas obligatorias para evitar confirmar ventas inválidas.
         for order in booking_orders:
+            order._cer_booking_require_dates()
             order._cer_assert_policy_accepted()
             order._cer_assert_minimum_deposit_for_reservation()
             if not order.cer_booking_overbooking:
