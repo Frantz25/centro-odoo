@@ -15,6 +15,7 @@
         # Security / data
         "security/ir.model.access.csv",
         "data/ir_sequence_data.xml",
+        "data/cer_document_template_data.xml",
 
         # Views (actions first, menus last)
         "views/cer_document_template_views.xml",
