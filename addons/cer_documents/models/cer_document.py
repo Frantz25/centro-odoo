@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import base64
 import re
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
@@ -104,8 +105,42 @@ class CERDocument(models.Model):
             doc.write({"html_content": html, "state": "final"})
         return True
 
+    def _attach_pdf_and_post_trace(self):
+        self.ensure_one()
+        report = self.env.ref("cer_documents.action_report_cer_document")
+        pdf_content, _ = report._render_qweb_pdf(self.ids)
+
+        filename = "%s.pdf" % (self.number or self.name or "documento_cer")
+        attachment = self.env["ir.attachment"].create(
+            {
+                "name": filename,
+                "type": "binary",
+                "datas": base64.b64encode(pdf_content),
+                "mimetype": "application/pdf",
+                "res_model": self.res_model,
+                "res_id": self.res_id,
+            }
+        )
+
+        origin = self.env[self.res_model].browse(self.res_id).exists()
+        if origin and hasattr(origin, "message_post"):
+            origin.message_post(
+                body=_("Documento CER generado y adjuntado: <b>%s</b>") % filename,
+                attachment_ids=[attachment.id],
+            )
+
+        if self.res_model == "sale.order" and origin and getattr(origin, "cer_booking_id", False):
+            booking = origin.cer_booking_id
+            booking.message_post(
+                body=_("Se generó documento CER desde pedido <b>%s</b>.") % (origin.name or "-"),
+                attachment_ids=[attachment.id],
+            )
+
+        return attachment
+
     def action_print_pdf(self):
         self.ensure_one()
         if self.state != "final":
             self.action_generate()
+        self._attach_pdf_and_post_trace()
         return self.env.ref("cer_documents.action_report_cer_document").report_action(self)
