@@ -8,6 +8,7 @@
       <xpath expr="//sheet//group" position="after">
         <group string="CER Reserva">
           <field name="cer_reservable"/>
+          <field name="cer_unit_type" invisible="not cer_reservable"/>
           <field name="cer_capacity_units" invisible="not cer_reservable"/>
         </group>
       </xpath>

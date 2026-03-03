@@ -2,5 +2,7 @@
 from . import product_template
 from . import cer_unit
 from . import cer_booking
+from . import cer_booking_request_line
+from . import cer_booking_unit_line
 from . import sale_order
 from . import sale_order_line

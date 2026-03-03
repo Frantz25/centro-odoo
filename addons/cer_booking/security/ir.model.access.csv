@@ -3,3 +3,7 @@ access_cer_booking_user,cer.booking.user,model_cer_booking,cer_base.group_cer_us
 access_cer_booking_manager,cer.booking.manager,model_cer_booking,cer_base.group_cer_manager,1,1,1,1
 access_cer_unit_user,cer.unit.user,model_cer_unit,cer_base.group_cer_user,1,0,0,0
 access_cer_unit_manager,cer.unit.manager,model_cer_unit,cer_base.group_cer_manager,1,1,1,1
+access_cer_booking_request_line_user,cer.booking.request.line.user,model_cer_booking_request_line,cer_base.group_cer_user,1,1,1,0
+access_cer_booking_request_line_manager,cer.booking.request.line.manager,model_cer_booking_request_line,cer_base.group_cer_manager,1,1,1,1
+access_cer_booking_unit_line_user,cer.booking.unit.line.user,model_cer_booking_unit_line,cer_base.group_cer_user,1,1,1,0
+access_cer_booking_unit_line_manager,cer.booking.unit.line.manager,model_cer_booking_unit_line,cer_base.group_cer_manager,1,1,1,1
