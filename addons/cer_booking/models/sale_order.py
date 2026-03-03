@@ -193,8 +193,18 @@ class SaleOrder(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        orders = super().create(vals_list)
-        for order, vals in zip(orders, vals_list):
+        normalized = []
+        for vals in vals_list:
+            vals = dict(vals)
+            ctx_default_booking = bool(self.env.context.get("default_cer_is_booking"))
+            if ctx_default_booking and "cer_is_booking" not in vals:
+                vals["cer_is_booking"] = True
+            if vals.get("cer_is_booking") and not vals.get("cer_booking_state"):
+                vals["cer_booking_state"] = "draft"
+            normalized.append(vals)
+
+        orders = super().create(normalized)
+        for order, vals in zip(orders, normalized):
             if vals.get("cer_is_booking"):
                 order._cer_booking_assign_number()
         return orders
