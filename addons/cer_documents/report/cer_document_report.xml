@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
   <template id="report_cer_document">
-    <t t-call="web.external_layout">
-      <div class="page">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-          <img src="/cer_documents/static/src/img/logo_cer.png" style="max-height:70px;" alt="Logo CER"/>
-          <div style="text-align:right;">
-            <h3 style="margin:0;" t-esc="doc.name"/>
-            <p class="text-muted" style="margin:0;">
-              <span t-esc="doc.number"/> - <span t-esc="doc.create_date"/>
-            </p>
+    <t t-foreach="docs" t-as="doc">
+      <t t-call="web.external_layout">
+        <div class="page">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+            <img src="/cer_documents/static/src/img/logo_cer.png" style="max-height:70px;" alt="Logo CER"/>
+            <div style="text-align:right;">
+              <h3 style="margin:0;" t-esc="doc.name"/>
+              <p class="text-muted" style="margin:0;">
+                <span t-esc="doc.number"/> - <span t-esc="doc.create_date"/>
+              </p>
+            </div>
           </div>
-        </div>
 
-        <t t-set="origin" t-value="env[doc.res_model].browse(doc.res_id) if doc.res_model and doc.res_id else False"/>
+          <t t-set="origin" t-value="env[doc.res_model].browse(doc.res_id) if doc.res_model and doc.res_id else False"/>
 
-        <t t-if="origin and doc.res_model == 'sale.order'">
+          <t t-if="origin and doc.res_model == 'sale.order'">
           <h4 style="margin-top:8px;">Resumen de Reserva</h4>
           <table style="width:100%; margin-bottom:12px; border-collapse:collapse;">
             <tr>
@@ -80,7 +81,8 @@
         <t t-if="not (origin and doc.res_model == 'sale.order')">
           <div t-raw="doc.html_content or ''"/>
         </t>
-      </div>
+        </div>
+      </t>
     </t>
   </template>
 
