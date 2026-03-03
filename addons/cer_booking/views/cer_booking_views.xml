@@ -26,10 +26,14 @@
       <calendar string="Calendario Reservas CER"
                 date_start="cer_date_from"
                 date_stop="cer_date_to"
-                color="partner_id">
+                color="cer_booking_state"
+                mode="month">
         <field name="cer_booking_name"/>
         <field name="partner_id"/>
         <field name="cer_booking_state"/>
+        <field name="cer_date_from"/>
+        <field name="cer_date_to"/>
+        <field name="cer_participants"/>
       </calendar>
     </field>
   </record>
@@ -43,10 +47,16 @@
         <field name="name"/>
         <field name="partner_id"/>
         <field name="cer_booking_state"/>
+        <field name="cer_date_from"/>
+        <field name="cer_date_to"/>
         <filter name="my" string="Mis reservas" domain="[('user_id','=',uid)]"/>
         <filter name="reserved" string="Reservadas" domain="[('cer_booking_state','=','reserved')]"/>
         <filter name="confirmed" string="Confirmadas" domain="[('cer_booking_state','=','confirmed')]"/>
         <filter name="cancelled" string="Canceladas" domain="[('cer_booking_state','=','cancelled')]"/>
+        <separator/>
+        <filter name="group_partner" string="Por Cliente" context="{'group_by': 'partner_id'}"/>
+        <filter name="group_state" string="Por Estado" context="{'group_by': 'cer_booking_state'}"/>
+        <filter name="group_start" string="Por Fecha Entrada" context="{'group_by': 'cer_date_from'}"/>
       </search>
     </field>
   </record>
@@ -57,6 +67,14 @@
     <field name="view_mode">list,calendar,form</field>
     <field name="domain">[('cer_is_booking','=',True)]</field>
     <field name="context">{'search_default_my': 0}</field>
+  </record>
+
+  <record id="action_cer_booking_calendar" model="ir.actions.act_window">
+    <field name="name">Calendario Reservas</field>
+    <field name="res_model">sale.order</field>
+    <field name="view_mode">calendar,list,form</field>
+    <field name="domain">[('cer_is_booking','=',True)]</field>
+    <field name="context">{'search_default_confirmed': 1}</field>
   </record>
 
 </odoo>

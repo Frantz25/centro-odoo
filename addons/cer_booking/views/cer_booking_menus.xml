@@ -14,6 +14,13 @@
             sequence="10"
             groups="cer_base.group_cer_user"/>
 
+  <menuitem id="menu_cer_booking_calendar"
+            name="Calendario"
+            parent="cer_booking.menu_cer_booking_root"
+            action="cer_booking.action_cer_booking_calendar"
+            sequence="11"
+            groups="cer_base.group_cer_user"/>
+
 
   <!-- Configuración (CER): CR-Capacidad -->
   <menuitem id="menu_cer_booking_capacity"
