@@ -1,6 +1,6 @@
 [options]
 ; Clave maestra para el DB Manager / creación de bases
-admin_passwd = centroManzan0
+admin_passwd = CHANGE_ME_MASTER_PASSWORD
 
 ; Conexión a Postgres (en compose el host del servicio es "db")
 db_host = db
@@ -22,4 +22,4 @@ db_name = cer_prod
 ; Si pones un reverse proxy (nginx/traefik), activa esto
 ; proxy_mode = True
 
-db_password = centroManzan0
+db_password = CHANGE_ME_DB_PASSWORD
