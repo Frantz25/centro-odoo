@@ -51,6 +51,7 @@
           <group>
             <field name="cer_booking_name" readonly="1"/>
             <field name="cer_booking_state" readonly="1"/>
+            <field name="cer_booking_qr_html" widget="html" readonly="1"/>
           </group>
         </group>
       </xpath>
