@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
+import secrets
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
@@ -74,6 +75,19 @@ class CERDocument(models.Model):
 
     html_content = fields.Html(string="HTML generado", sanitize=False, readonly=True)
 
+    signature_state = fields.Selection(
+        [("unsigned", "Sin firma"), ("signed", "Firmado")],
+        string="Estado Firma",
+        default="unsigned",
+        required=True,
+        copy=False,
+    )
+    signature_image = fields.Image(string="Firma PNG", attachment=True)
+    signature_signer_name = fields.Char(string="Firmante")
+    signature_signed_at = fields.Datetime(string="Fecha firma", readonly=True)
+    portal_access_token = fields.Char(string="Token portal", copy=False, readonly=True, index=True)
+    portal_sign_url = fields.Char(string="URL firma portal", compute="_compute_portal_sign_url", readonly=True)
+
     state = fields.Selection([("draft", "Borrador"), ("final", "Final")], default="draft", required=True)
 
     def _reference_models(self):
@@ -88,12 +102,34 @@ class CERDocument(models.Model):
             if rec.res_model and rec.res_id:
                 rec.res_ref = "%s,%s" % (rec.res_model, rec.res_id)
 
+    @api.depends("portal_access_token")
+    def _compute_portal_sign_url(self):
+        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url") or ""
+        for rec in self:
+            if rec.portal_access_token and base_url:
+                rec.portal_sign_url = "%s/cer/document/%s/sign?access_token=%s" % (base_url, rec.id, rec.portal_access_token)
+            else:
+                rec.portal_sign_url = False
+
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
             if not vals.get("number"):
                 vals["number"] = self.env["ir.sequence"].next_by_code("cer.document") or "/"
+            if not vals.get("portal_access_token"):
+                vals["portal_access_token"] = secrets.token_urlsafe(24)
         return super().create(vals_list)
+
+    def action_mark_signed(self):
+        for doc in self:
+            if not doc.signature_image:
+                raise UserError(_("Debes cargar una firma PNG antes de marcar como firmado."))
+            doc.write({
+                "signature_state": "signed",
+                "signature_signed_at": fields.Datetime.now(),
+                "signature_signer_name": doc.signature_signer_name or (self.env.user.partner_id.name or ""),
+            })
+        return True
 
     def action_generate(self):
         for doc in self:

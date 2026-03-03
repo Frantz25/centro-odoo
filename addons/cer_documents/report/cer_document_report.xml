@@ -81,6 +81,15 @@
         <t t-if="not (origin and doc.res_model == 'sale.order')">
           <div t-raw="doc.html_content or ''"/>
         </t>
+
+        <div style="margin-top:24px; border-top:1px solid #ddd; padding-top:10px;" t-if="doc.signature_image or doc.signature_signer_name">
+          <h4 style="margin-bottom:8px;">Firma</h4>
+          <div t-if="doc.signature_image">
+            <img t-att-src="image_data_uri(doc.signature_image)" alt="Firma" style="max-height:90px;"/>
+          </div>
+          <p style="margin-top:6px;" t-if="doc.signature_signer_name"><strong>Firmante:</strong> <span t-esc="doc.signature_signer_name"/></p>
+          <p style="margin-top:2px;" t-if="doc.signature_signed_at"><strong>Fecha firma:</strong> <span t-esc="doc.signature_signed_at"/></p>
+        </div>
           </div>
         </t>
       </t>

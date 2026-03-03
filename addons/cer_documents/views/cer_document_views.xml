@@ -23,6 +23,7 @@
       <form string="Documento CER">
         <header>
           <button name="action_generate" type="object" string="Regenerar" class="btn-secondary"/>
+          <button name="action_mark_signed" type="object" string="Marcar firmado" class="btn-secondary"/>
           <button name="action_print_pdf" type="object" string="Imprimir PDF" class="btn-primary"/>
           <field name="state" widget="statusbar" statusbar_visible="draft,final"/>
         </header>
@@ -43,6 +44,21 @@
           <notebook>
             <page string="Contenido">
               <field name="html_content" widget="html" readonly="1"/>
+            </page>
+            <page string="Firma">
+              <group>
+                <group>
+                  <field name="signature_state" readonly="1"/>
+                  <field name="signature_signer_name"/>
+                  <field name="signature_signed_at" readonly="1"/>
+                </group>
+                <group>
+                  <field name="signature_image" widget="image" class="oe_avatar"/>
+                </group>
+              </group>
+              <group>
+                <field name="portal_sign_url" widget="url" readonly="1"/>
+              </group>
             </page>
           </notebook>
         </sheet>
