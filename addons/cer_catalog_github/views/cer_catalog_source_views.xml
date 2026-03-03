@@ -47,6 +47,7 @@
               <field name="last_sync_at" readonly="1"/>
               <field name="last_sync_state" readonly="1"/>
               <field name="last_sync_log_id" readonly="1"/>
+              <field name="last_source_hash" readonly="1"/>
               <field name="sync_log_count" readonly="1"/>
             </group>
           </group>
@@ -62,7 +63,7 @@
           <group string="Modo A (Deploy-time)" invisible="source_type != 'local'">
             <div class="alert alert-info">
               Esta fuente sincroniza desde el CSV local del módulo (por defecto: en instalación, y también manualmente con 'Sincronizar ahora').
-              Para cambiar el catálogo, actualiza el archivo <code>cer_catalog_github/data/catalog_seed.csv</code> en tu repo y re-instala/actualiza.
+              Para cambiar el catálogo, actualiza el archivo <code>cer_catalog_github/data/catalog_cer.csv</code> en tu repo y re-instala/actualiza.
             </div>
           </group>
         </sheet>

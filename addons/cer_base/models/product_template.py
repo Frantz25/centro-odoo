@@ -5,6 +5,12 @@ from odoo import fields, models
 class ProductTemplate(models.Model):
     _inherit = "product.template"
 
+    cer_sku = fields.Char(
+        string="CER - SKU",
+        index=True,
+        help="Identificador estable CER para sincronización de catálogo (idempotencia).",
+    )
+
     cer_charge_mode = fields.Selection(
         selection=[
             ("room_person_night", "Habitación: persona x noche"),

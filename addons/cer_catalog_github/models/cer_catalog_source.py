@@ -58,6 +58,7 @@ class CERCatalogSource(models.Model):
         readonly=True,
     )
     last_sync_log_id = fields.Many2one("cer.catalog.sync.log", string="Último log", readonly=True)
+    last_source_hash = fields.Char(string="Hash último origen", readonly=True)
 
     sync_log_count = fields.Integer(compute="_compute_sync_log_count")
 
@@ -86,7 +87,7 @@ class CERCatalogSource(models.Model):
 
     def _get_local_seed_path(self):
         # Path estable relativo al módulo (permite editar el CSV en el servidor y re-sincronizar)
-        return os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data", "catalog_seed.csv"))
+        return os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data", "catalog_cer.csv"))
 
     def action_sync_now(self):
         for rec in self:

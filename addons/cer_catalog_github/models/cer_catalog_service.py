@@ -4,6 +4,7 @@ from __future__ import annotations
 import csv
 import io
 import time
+import hashlib
 import urllib.request
 import urllib.error
 
@@ -68,6 +69,15 @@ class CERCatalogService(models.AbstractModel):
         created = updated = skipped = 0
 
         try:
+            source_hash = hashlib.sha256(raw_bytes or b"").hexdigest()
+            if source.last_source_hash and source.last_source_hash == source_hash:
+                log.write({
+                    "state": "skipped",
+                    "message": "Sin cambios: hash de origen idéntico al último sync.",
+                })
+                self._finalize_source(source, log, started, source_hash=source_hash)
+                return log
+
             text = raw_bytes.decode("utf-8-sig", errors="replace")
             rows = self._parse_csv(text)
 
@@ -85,8 +95,16 @@ class CERCatalogService(models.AbstractModel):
             UoM = self.env["uom.uom"].sudo()
 
             codes = [r.get("default_code") for r in rows if r.get("default_code")]
-            existing = Product.search([("default_code", "in", list(set(codes)))])
-            existing_map = {p.default_code: p for p in existing}
+            cer_skus = [r.get("cer_sku") for r in rows if r.get("cer_sku")]
+
+            existing = Product.browse()
+            if codes:
+                existing |= Product.search([("default_code", "in", list(set(codes)))])
+            if cer_skus:
+                existing |= Product.search([("product_tmpl_id.cer_sku", "in", list(set(cer_skus)))])
+
+            existing_code_map = {p.default_code: p for p in existing if p.default_code}
+            existing_sku_map = {p.product_tmpl_id.cer_sku: p for p in existing if p.product_tmpl_id.cer_sku}
 
             categ_cache = {}
             uom_cache = {}
@@ -97,14 +115,15 @@ class CERCatalogService(models.AbstractModel):
 
             for r in rows:
                 code = r.get("default_code")
+                cer_sku = r.get("cer_sku") or code
                 name = r.get("name")
                 if not code or not name:
                     skipped += 1
                     continue
 
-                prod = existing_map.get(code)
+                prod = existing_sku_map.get(cer_sku) or existing_code_map.get(code)
                 prod_vals = {}
-                tmpl_vals = {}
+                tmpl_vals = {"cer_sku": cer_sku}
 
                 # type
                 ptype = (r.get("type") or "").strip().lower()
@@ -173,7 +192,8 @@ class CERCatalogService(models.AbstractModel):
                     create_vals = {"name": name, "default_code": code, "sale_ok": True}
                     create_vals.update(prod_vals)
                     new_prod = Product.create(create_vals)
-                    existing_map[code] = new_prod
+                    existing_code_map[code] = new_prod
+                    existing_sku_map[cer_sku] = new_prod
                     if tmpl_vals:
                         new_prod.product_tmpl_id.write(tmpl_vals)
                     created += 1
@@ -194,21 +214,24 @@ class CERCatalogService(models.AbstractModel):
                 "error_trace": traceback.format_exc(),
             })
 
-        self._finalize_source(source, log, started)
+        self._finalize_source(source, log, started, source_hash=source_hash)
         return log
 
     @api.model
-    def _finalize_source(self, source, log, started_time):
+    def _finalize_source(self, source, log, started_time, source_hash=None):
         duration_ms = int((time.time() - started_time) * 1000.0)
         log.write({
             "finished_at": fields.Datetime.now(),
             "duration_ms": duration_ms,
         })
-        source.write({
+        vals = {
             "last_sync_at": log.finished_at,
             "last_sync_state": log.state,
             "last_sync_log_id": log.id,
-        })
+        }
+        if source_hash:
+            vals["last_source_hash"] = source_hash
+        source.write(vals)
 
     @api.model
     def _parse_csv(self, text: str):
@@ -236,7 +259,8 @@ class CERCatalogService(models.AbstractModel):
         aliases = {
             "codigo": "default_code",
             "code": "default_code",
-            "sku": "default_code",
+            "sku": "cer_sku",
+            "cer_sku": "cer_sku",
             "nombre": "name",
             "precio": "list_price",
             "price": "list_price",

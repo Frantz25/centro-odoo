@@ -4,7 +4,7 @@ Catálogo de productos CER desde CSV.
 
 ## Modos
 ### Modo A (deploy-time)
-- Importa el CSV local del módulo: `cer_catalog_github/data/catalog_seed.csv`
+- Importa el CSV local del módulo: `cer_catalog_github/data/catalog_cer.csv`
 - Se ejecuta en `post_init_hook` (instalación del módulo).
 - Recomendación: mantener ese CSV versionado (Git) y desplegarlo con el código.
 
@@ -25,3 +25,9 @@ Opcionales:
 - active (1/0, true/false)
 - charge_mode (room_person_night/day/person/fixed)
 - min_people (entero)
+- cer_sku (opcional, recomendado como clave estable CER)
+
+## Idempotencia
+- Clave principal: `cer_sku` (si viene en CSV); fallback: `default_code`.
+- Se guarda `last_source_hash` en la fuente.
+- Si el hash del CSV no cambia, la sync se marca como `skipped`.
