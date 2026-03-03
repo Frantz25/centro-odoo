@@ -12,7 +12,56 @@
             </p>
           </div>
         </div>
-        <div t-raw="doc.html_content or ''"/>
+
+        <t t-set="origin" t-value="env[doc.res_model].browse(doc.res_id) if doc.res_model and doc.res_id else False"/>
+
+        <t t-if="origin and doc.res_model == 'sale.order'">
+          <h4 style="margin-top:8px;">Resumen de Reserva</h4>
+          <table style="width:100%; margin-bottom:12px; border-collapse:collapse;">
+            <tr>
+              <td><strong>Cliente:</strong> <span t-esc="origin.partner_id.display_name"/></td>
+              <td><strong>Orden:</strong> <span t-esc="origin.name"/></td>
+            </tr>
+            <tr>
+              <td><strong>Entrada:</strong> <span t-esc="origin.cer_date_from or '-'"/></td>
+              <td><strong>Salida:</strong> <span t-esc="origin.cer_date_to or '-'"/></td>
+            </tr>
+            <tr>
+              <td><strong>Estadía:</strong> <span t-esc="origin.cer_stay_days or 0"/> día(s)</td>
+              <td><strong>Participantes:</strong> <span t-esc="origin.cer_participants or 0"/></td>
+            </tr>
+          </table>
+
+          <h4>Detalle</h4>
+          <table class="table table-sm" style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr>
+                <th style="text-align:left;">Producto</th>
+                <th style="text-align:right;">Cantidad</th>
+                <th style="text-align:right;">Precio Unit.</th>
+                <th style="text-align:right;">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr t-foreach="origin.order_line.filtered(lambda l: not l.display_type)" t-as="line">
+                <td><span t-esc="line.product_id.name"/></td>
+                <td style="text-align:right;"><span t-esc="line.product_uom_qty"/></td>
+                <td style="text-align:right;"><span t-esc="line.price_unit"/></td>
+                <td style="text-align:right;"><span t-esc="line.price_subtotal"/></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table style="width:40%; margin-left:auto; margin-top:10px;">
+            <tr><td><strong>Neto</strong></td><td style="text-align:right;"><span t-esc="origin.amount_untaxed"/></td></tr>
+            <tr><td><strong>IVA</strong></td><td style="text-align:right;"><span t-esc="origin.amount_tax"/></td></tr>
+            <tr><td><strong>Total</strong></td><td style="text-align:right;"><span t-esc="origin.amount_total"/></td></tr>
+          </table>
+        </t>
+
+        <t t-if="not (origin and doc.res_model == 'sale.order')">
+          <div t-raw="doc.html_content or ''"/>
+        </t>
       </div>
     </t>
   </template>
