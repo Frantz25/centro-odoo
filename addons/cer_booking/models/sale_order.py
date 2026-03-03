@@ -3,6 +3,8 @@ from __future__ import annotations
 
 from collections import defaultdict
 
+from urllib.parse import quote
+
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 
@@ -29,12 +31,25 @@ class SaleOrder(models.Model):
     cer_booking_id = fields.Many2one("cer.booking", string="Reserva CER", copy=False, readonly=True)
     cer_booking_offline_code = fields.Char(related="cer_booking_id.offline_access_code", string="Código Offline", readonly=True)
     cer_booking_qr_url = fields.Char(related="cer_booking_id.qr_url", string="URL QR", readonly=True)
+    cer_booking_qr_html = fields.Html(string="QR Check-in", compute="_compute_cer_booking_qr_html", sanitize=False)
 
     cer_booking_overbooking = fields.Boolean(
         string="Permitir sobre-reserva",
         default=False,
         help="Si está activo, permite reservar aunque la disponibilidad esté excedida (solo managers).",
     )
+
+    @api.depends("cer_booking_qr_url")
+    def _compute_cer_booking_qr_html(self):
+        for order in self:
+            if order.cer_booking_qr_url:
+                encoded = quote(order.cer_booking_qr_url, safe="")
+                order.cer_booking_qr_html = (
+                    f"<img src='/report/barcode/?type=QR&value={encoded}&width=180&height=180' "
+                    "style='max-width:180px;max-height:180px;'/>"
+                )
+            else:
+                order.cer_booking_qr_html = False
 
     def _cer_booking_require_dates(self):
         for order in self:
