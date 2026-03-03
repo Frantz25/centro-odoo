@@ -11,11 +11,10 @@
           <p>Hola,</p>
           <p>Tu reserva ha sido <strong>reservada</strong>.</p>
           <ul>
-            <li><strong>Referencia</strong>: ${object.name}</li>
+            <li><strong>Referencia</strong>: ${object.cer_booking_name or object.name}</li>
             <li><strong>Entrada</strong>: ${object.cer_date_from or ''}</li>
             <li><strong>Salida</strong>: ${object.cer_date_to or ''}</li>
-            <li><strong>Participantes</strong>: ${object.cer_participants or 0}</li>
-            <li><strong>Total</strong>: ${format_amount(object.amount_total, object.currency_id)}</li>
+            <li><strong>Código de acceso</strong>: ${object.cer_booking_offline_code or ''}</li>
           </ul>
           <p>Gracias.</p>
         </div>
@@ -23,7 +22,7 @@
     </record>
 
     <record id="mail_template_cer_booking_confirmed" model="mail.template">
-      <field name="name">CER - Reserva confirmada</field>
+      <field name="name">CER - Reserva confirmada (cliente)</field>
       <field name="model_id" ref="sale.model_sale_order"/>
       <field name="subject">Reserva confirmada: ${object.name}</field>
       <field name="body_html"><![CDATA[
@@ -31,9 +30,29 @@
           <p>Hola,</p>
           <p>Tu reserva ha sido <strong>confirmada</strong>.</p>
           <ul>
-            <li><strong>Referencia</strong>: ${object.name}</li>
+            <li><strong>Referencia</strong>: ${object.cer_booking_name or object.name}</li>
             <li><strong>Entrada</strong>: ${object.cer_date_from or ''}</li>
             <li><strong>Salida</strong>: ${object.cer_date_to or ''}</li>
+            <li><strong>Código de acceso</strong>: ${object.cer_booking_offline_code or ''}</li>
+          </ul>
+        </div>
+      ]]></field>
+    </record>
+
+    <record id="mail_template_cer_booking_confirmed_internal" model="mail.template">
+      <field name="name">CER - Reserva confirmada (interno)</field>
+      <field name="model_id" ref="sale.model_sale_order"/>
+      <field name="subject">[Interno] Reserva confirmada: ${object.name}</field>
+      <field name="body_html"><![CDATA[
+        <div>
+          <p>Reserva <strong>confirmada</strong> para seguimiento interno.</p>
+          <ul>
+            <li><strong>Cliente</strong>: ${object.partner_id.name or ''}</li>
+            <li><strong>Referencia</strong>: ${object.name}</li>
+            <li><strong>Reserva</strong>: ${object.cer_booking_name or ''}</li>
+            <li><strong>Entrada</strong>: ${object.cer_date_from or ''}</li>
+            <li><strong>Salida</strong>: ${object.cer_date_to or ''}</li>
+            <li><strong>Participantes</strong>: ${object.cer_participants or 0}</li>
             <li><strong>Total</strong>: ${format_amount(object.amount_total, object.currency_id)}</li>
           </ul>
         </div>
