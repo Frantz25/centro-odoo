@@ -53,7 +53,7 @@
             <field name="cer_booking_state" readonly="1"/>
             <field name="cer_booking_qr_html" widget="html" readonly="1"/>
           </group>
-          <group>
+          <group name="cer_booking_summary_top">
             <field name="cer_date_from" string="Fecha Entrada" readonly="1"/>
             <field name="cer_date_to" string="Fecha Salida" readonly="1"/>
             <field name="cer_stay_days" string="Estadía" readonly="1"/>
@@ -63,6 +63,29 @@
             <field name="payment_term_id" string="Términos de pago" readonly="1"/>
           </group>
         </group>
+      </xpath>
+
+      <!-- Ocultar duplicados de resumen fuera del bloque superior -->
+      <xpath expr="//field[@name='cer_date_from' and not(ancestor::group[@name='cer_booking_summary_top'])]" position="attributes">
+        <attribute name="invisible">1</attribute>
+      </xpath>
+      <xpath expr="//field[@name='cer_date_to' and not(ancestor::group[@name='cer_booking_summary_top'])]" position="attributes">
+        <attribute name="invisible">1</attribute>
+      </xpath>
+      <xpath expr="//field[@name='cer_stay_days' and not(ancestor::group[@name='cer_booking_summary_top'])]" position="attributes">
+        <attribute name="invisible">1</attribute>
+      </xpath>
+      <xpath expr="//field[@name='cer_participants' and not(ancestor::group[@name='cer_booking_summary_top'])]" position="attributes">
+        <attribute name="invisible">1</attribute>
+      </xpath>
+      <xpath expr="//field[@name='date_order' and not(ancestor::group[@name='cer_booking_summary_top'])]" position="attributes">
+        <attribute name="invisible">1</attribute>
+      </xpath>
+      <xpath expr="//field[@name='pricelist_id' and not(ancestor::group[@name='cer_booking_summary_top'])]" position="attributes">
+        <attribute name="invisible">1</attribute>
+      </xpath>
+      <xpath expr="//field[@name='payment_term_id' and not(ancestor::group[@name='cer_booking_summary_top'])]" position="attributes">
+        <attribute name="invisible">1</attribute>
       </xpath>
 
       <!-- Add units reservation column on order lines -->
