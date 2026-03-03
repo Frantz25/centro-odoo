@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="portal_document_sign_form" name="CER Document Sign Form">
+    <t t-call="web.html_container">
+      <div class="container my-4" style="max-width: 720px;">
+        <h3>Firma de Documento CER</h3>
+        <p><strong>Documento:</strong> <span t-esc="doc.name"/> (<span t-esc="doc.number"/>)</p>
+
+        <t t-if="success">
+          <div class="alert alert-success">Firma cargada correctamente.</div>
+        </t>
+        <t t-if="error">
+          <div class="alert alert-danger">No se pudo cargar la firma. Verifica el archivo e intenta nuevamente.</div>
+        </t>
+
+        <form t-att-action="'/cer/document/%s/sign/submit' % doc.id" method="post" enctype="multipart/form-data">
+          <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+          <input type="hidden" name="access_token" t-att-value="access_token"/>
+
+          <div class="mb-3">
+            <label class="form-label">Nombre firmante</label>
+            <input type="text" name="signer_name" class="form-control" t-att-value="doc.signature_signer_name or ''"/>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Firma PNG</label>
+            <input type="file" name="signature_file" class="form-control" accept="image/png,image/jpeg,image/webp" required="required"/>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Firmar documento</button>
+        </form>
+
+        <t t-if="doc.signature_image">
+          <hr/>
+          <h5>Firma actual</h5>
+          <img t-att-src="image_data_uri(doc.signature_image)" style="max-height:100px;" alt="Firma actual"/>
+          <p class="mt-2" t-if="doc.signature_signed_at">
+            Firmado el <span t-esc="doc.signature_signed_at"/>
+          </p>
+        </t>
+      </div>
+    </t>
+  </template>
+</odoo>

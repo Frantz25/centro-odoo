@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import base64
 import re
 import secrets
 from odoo import api, fields, models, _
@@ -120,16 +121,38 @@ class CERDocument(models.Model):
                 vals["portal_access_token"] = secrets.token_urlsafe(24)
         return super().create(vals_list)
 
+    def _apply_signature(self, signature_image_b64, signer_name=None, source="interno"):
+        self.ensure_one()
+        if not signature_image_b64:
+            raise UserError(_("Debes cargar una firma PNG antes de marcar como firmado."))
+
+        self.write({
+            "signature_image": signature_image_b64,
+            "signature_state": "signed",
+            "signature_signed_at": fields.Datetime.now(),
+            "signature_signer_name": signer_name or self.signature_signer_name or (self.env.user.partner_id.name or ""),
+        })
+
+        origin = self.env[self.res_model].browse(self.res_id).exists()
+        body = _("Acta/documento CER firmado (%s).") % source
+        if origin and hasattr(origin, "message_post"):
+            origin.message_post(body=body)
+        self.message_post(body=body)
+        return True
+
     def action_mark_signed(self):
         for doc in self:
             if not doc.signature_image:
                 raise UserError(_("Debes cargar una firma PNG antes de marcar como firmado."))
-            doc.write({
-                "signature_state": "signed",
-                "signature_signed_at": fields.Datetime.now(),
-                "signature_signer_name": doc.signature_signer_name or (self.env.user.partner_id.name or ""),
-            })
+            doc._apply_signature(doc.signature_image, doc.signature_signer_name, source="interno")
         return True
+
+    def action_portal_sign(self, file_bytes, signer_name=None):
+        self.ensure_one()
+        if not file_bytes:
+            raise UserError(_("No se recibió el archivo de firma."))
+        b64 = base64.b64encode(file_bytes)
+        return self._apply_signature(b64, signer_name=signer_name, source="portal")
 
     def action_generate(self):
         for doc in self:

@@ -11,6 +11,7 @@
         "cer_base",
         "cer_booking",
         "sale",
+        "portal",
     ],
     "data": [
         # Security / data
@@ -23,6 +24,7 @@
         "views/cer_document_views.xml",
         "wizards/cer_document_create_wizard_views.xml",
         "views/sale_order_views.xml",
+        "views/portal_sign_templates.xml",
         "report/cer_document_report.xml",
         "views/cer_documents_menus.xml",
     ],
