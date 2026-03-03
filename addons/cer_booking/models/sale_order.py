@@ -226,17 +226,22 @@ class SaleOrder(models.Model):
                 order.cer_booking_name = booking.booking_code
 
     def action_confirm(self):
+        booking_orders = self.filtered("cer_is_booking")
+
+        # A1: validaciones previas obligatorias para evitar confirmar ventas inválidas.
+        for order in booking_orders:
+            order._cer_assert_policy_accepted()
+            order._cer_assert_minimum_deposit_for_reservation()
+            if not order.cer_booking_overbooking:
+                order._cer_check_availability()
+
         res = super().action_confirm()
-        for order in self.filtered("cer_is_booking"):
-            try:
-                order._cer_assert_policy_accepted()
-                order._cer_assert_minimum_deposit_for_reservation()
-            except UserError as e:
-                order.message_post(body=_("Pedido confirmado, pero reserva CER bloqueada: %s") % e.args[0])
-                continue
+
+        for order in booking_orders:
             order._cer_ensure_booking_created()
             if order.cer_booking_state != "cancelled":
                 order.cer_booking_state = "confirmed"
+
         return res
 
     def action_quotation_accept(self):
