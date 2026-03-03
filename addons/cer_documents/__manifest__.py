@@ -9,6 +9,7 @@
     "category": "Sales",
     "depends": [
         "cer_base",
+        "cer_booking",
         "sale",
     ],
     "data": [

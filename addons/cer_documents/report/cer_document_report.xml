@@ -57,6 +57,24 @@
             <tr><td><strong>IVA</strong></td><td style="text-align:right;"><span t-esc="origin.amount_tax"/></td></tr>
             <tr><td><strong>Total</strong></td><td style="text-align:right;"><span t-esc="origin.amount_total"/></td></tr>
           </table>
+
+          <div style="margin-top:18px; border-top:1px solid #ddd; padding-top:12px;">
+            <h4 style="margin-bottom:8px;">Check-in Reserva</h4>
+            <t t-if="origin.cer_booking_qr_url">
+              <div t-raw="origin.cer_booking_qr_html or ''"/>
+              <p style="margin-top:6px; font-size:12px;">
+                <strong>URL check-in:</strong>
+                <span t-esc="origin.cer_booking_qr_url"/>
+              </p>
+              <p style="margin-top:2px; font-size:12px;" t-if="origin.cer_booking_offline_code">
+                <strong>Código offline:</strong>
+                <span t-esc="origin.cer_booking_offline_code"/>
+              </p>
+            </t>
+            <t t-else="">
+              <p class="text-muted">Reserva sin QR disponible aún. Confirma la reserva para habilitar check-in.</p>
+            </t>
+          </div>
         </t>
 
         <t t-if="not (origin and doc.res_model == 'sale.order')">
