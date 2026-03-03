@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="sale_order_form_inherit_cer_communications" model="ir.ui.view">
+    <field name="name">sale.order.form.inherit.cer.communications</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.view_order_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//header" position="inside">
+        <button name="action_cer_send_checkin_pass"
+                type="object"
+                string="Enviar Pase Check-in"
+                class="btn-secondary"
+                invisible="not cer_is_booking or state not in ('sale','done')"/>
+      </xpath>
+    </field>
+  </record>
+</odoo>

@@ -20,6 +20,7 @@
         "security/cer_communications_security.xml",
         "security/ir.model.access.csv",
         "views/cer_communication_rule_views.xml",
+        "views/sale_order_views.xml",
         "views/cer_communications_menus.xml",
         "data/mail_templates.xml",
         "data/default_rules.xml",

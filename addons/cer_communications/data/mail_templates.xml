@@ -40,6 +40,32 @@
       ]]></field>
     </record>
 
+    <record id="mail_template_cer_booking_checkin_pass" model="mail.template">
+      <field name="name">CER - Pase individual check-in</field>
+      <field name="model_id" ref="sale.model_sale_order"/>
+      <field name="subject">Tu pase de check-in CER: ${object.name}</field>
+      <field name="body_html"><![CDATA[
+        <div>
+          <p>Hola ${object.partner_id.name or ''},</p>
+          <p>Te compartimos tu pase de check-in.</p>
+          <ul>
+            <li><strong>Reserva</strong>: ${object.cer_booking_name or object.name}</li>
+            <li><strong>Entrada</strong>: ${object.cer_date_from or ''}</li>
+            <li><strong>Salida</strong>: ${object.cer_date_to or ''}</li>
+            <li><strong>Código de acceso</strong>: ${object.cer_booking_offline_code or ''}</li>
+          </ul>
+          <p>
+            <img src="${object.cer_checkin_qr_img_url or ''}" alt="QR Check-in" style="max-width:220px;max-height:220px;"/>
+          </p>
+          <p>
+            Enlace directo check-in:<br/>
+            <a href="${object.cer_booking_qr_url or '#'}">${object.cer_booking_qr_url or ''}</a>
+          </p>
+          <p>Presenta este código QR en recepción.</p>
+        </div>
+      ]]></field>
+    </record>
+
     <record id="mail_template_cer_booking_cancelled" model="mail.template">
       <field name="name">CER - Reserva cancelada</field>
       <field name="model_id" ref="sale.model_sale_order"/>
