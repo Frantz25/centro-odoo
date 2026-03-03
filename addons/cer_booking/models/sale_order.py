@@ -8,6 +8,8 @@ from urllib.parse import quote
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 
+ICP_DEPOSIT_PERCENT_KEY = "cer_base.default_deposit_percent"
+
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"
@@ -57,6 +59,39 @@ class SaleOrder(models.Model):
                 raise UserError(_("Debes indicar Fecha Entrada y Fecha Salida para reservar."))
             if order.cer_date_to < order.cer_date_from:
                 raise ValidationError(_("La Fecha Salida no puede ser menor que la Fecha Entrada."))
+
+    def _cer_get_deposit_percent_required(self):
+        self.ensure_one()
+        icp = self.env["ir.config_parameter"].sudo()
+        scoped = icp.get_param(f"{ICP_DEPOSIT_PERCENT_KEY}__company_{self.company_id.id}", default=None)
+        if scoped not in (None, ""):
+            return float(scoped or 0.0)
+        return float(icp.get_param(ICP_DEPOSIT_PERCENT_KEY, 50.0) or 50.0)
+
+    def _cer_get_paid_amount(self):
+        self.ensure_one()
+        paid = 0.0
+        invoices = self.invoice_ids.filtered(lambda m: m.state == "posted")
+        for inv in invoices:
+            current_paid = max((inv.amount_total or 0.0) - (inv.amount_residual or 0.0), 0.0)
+            if inv.move_type in ("out_invoice", "out_receipt"):
+                paid += current_paid
+            elif inv.move_type == "out_refund":
+                paid -= current_paid
+        return max(paid, 0.0)
+
+    def _cer_assert_minimum_deposit_for_reservation(self):
+        for order in self:
+            if not order.cer_is_booking:
+                continue
+            required_percent = order._cer_get_deposit_percent_required()
+            required_amount = (order.amount_total or 0.0) * (required_percent / 100.0)
+            paid_amount = order._cer_get_paid_amount()
+            if paid_amount + 1e-6 < required_amount:
+                raise UserError(
+                    _("No se puede reservar sin abono mínimo. Requerido: %(pct)s%% (%(req).2f). Pagado: %(paid).2f")
+                    % {"pct": required_percent, "req": required_amount, "paid": paid_amount}
+                )
 
     def _cer_booking_overlap_domain(self, date_from, date_to):
         # Overlap: other_from < date_to AND other_to > date_from
@@ -175,8 +210,13 @@ class SaleOrder(models.Model):
 
     def action_confirm(self):
         res = super().action_confirm()
-        self._cer_ensure_booking_created()
         for order in self.filtered("cer_is_booking"):
+            try:
+                order._cer_assert_minimum_deposit_for_reservation()
+            except UserError as e:
+                order.message_post(body=_("Pedido confirmado, pero reserva CER bloqueada: %s") % e.args[0])
+                continue
+            order._cer_ensure_booking_created()
             if order.cer_booking_state != "cancelled":
                 order.cer_booking_state = "confirmed"
         return res
@@ -210,6 +250,7 @@ class SaleOrder(models.Model):
             if order.cer_booking_state not in ("draft",):
                 raise UserError(_("Solo puedes reservar desde estado Borrador."))
 
+            order._cer_assert_minimum_deposit_for_reservation()
             order._cer_check_availability()
 
             order.cer_booking_state = "reserved"
@@ -225,6 +266,7 @@ class SaleOrder(models.Model):
             if order.cer_booking_state != "reserved":
                 raise UserError(_("Primero debes dejar la reserva en estado Reservada."))
 
+            order._cer_assert_minimum_deposit_for_reservation()
             # Confirmar venta estándar
             order.action_confirm()
             order.cer_booking_state = "confirmed"
