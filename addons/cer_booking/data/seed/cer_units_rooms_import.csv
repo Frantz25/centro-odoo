@@ -1,0 +1,30 @@
+name,unit_type,capacity,is_pool,pool_qty,active
+Habitación 01,std_4,4,False,0,True
+Habitación 02,std_4,4,False,0,True
+Habitación 03,std_4,4,False,0,True
+Habitación 04,std_4,4,False,0,True
+Habitación 05,std_5,6,False,0,True
+Habitación 06,std_5,6,False,0,True
+Habitación 07,std_4,4,False,0,True
+Habitación 08,std_4,4,False,0,True
+Habitación 09,std_4,4,False,0,True
+Habitación 10,std_4,4,False,0,True
+Habitación 11,std_4,3,False,0,True
+Habitación 12,vip_2,2,False,0,True
+Habitación 13,std_4,4,False,0,True
+Habitación 14,std_4,4,False,0,True
+Habitación 15,std_4,4,False,0,True
+Habitación 16,std_4,4,False,0,True
+Habitación 17,std_4,4,False,0,True
+Habitación 18,std_4,4,False,0,True
+Habitación 19,std_5,6,False,0,True
+Habitación 20,std_5,6,False,0,True
+Habitación 21,std_4,4,False,0,True
+Habitación 22,std_4,4,False,0,True
+Habitación 23,std_4,4,False,0,True
+Habitación 24,std_4,4,False,0,True
+Habitación 25,vip_2,2,False,0,True
+Habitación 26,std_4,3,False,0,True
+Camping Pool,camp_slot,1,True,150,True
+Salón Principal,event_space,350,False,0,True
+Capilla,event_space,120,False,0,True
