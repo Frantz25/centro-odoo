@@ -176,6 +176,9 @@ class SaleOrder(models.Model):
     def action_confirm(self):
         res = super().action_confirm()
         self._cer_ensure_booking_created()
+        for order in self.filtered("cer_is_booking"):
+            if order.cer_booking_state != "cancelled":
+                order.cer_booking_state = "confirmed"
         return res
 
     def _cer_booking_assign_number(self):
