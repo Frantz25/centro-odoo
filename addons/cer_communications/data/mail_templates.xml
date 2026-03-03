@@ -102,6 +102,42 @@
       ]]></field>
     </record>
 
+    <record id="mail_template_cer_booking_reserved_internal" model="mail.template">
+      <field name="name">CER - Reserva reservada (interno)</field>
+      <field name="model_id" ref="sale.model_sale_order"/>
+      <field name="subject">[Interno] Reserva reservada: ${object.name}</field>
+      <field name="body_html"><![CDATA[
+        <div>
+          <p>Reserva en estado <strong>reservada</strong>.</p>
+          <ul>
+            <li><strong>Cliente</strong>: ${object.partner_id.name or ''}</li>
+            <li><strong>Reserva</strong>: ${object.cer_booking_name or object.name}</li>
+            <li><strong>Entrada</strong>: ${object.cer_date_from or ''}</li>
+            <li><strong>Salida</strong>: ${object.cer_date_to or ''}</li>
+            <li><strong>Participantes</strong>: ${object.cer_participants or 0}</li>
+          </ul>
+        </div>
+      ]]></field>
+    </record>
+
+    <record id="mail_template_cer_booking_cancelled_internal" model="mail.template">
+      <field name="name">CER - Reserva cancelada (interno)</field>
+      <field name="model_id" ref="sale.model_sale_order"/>
+      <field name="subject">[Interno] Reserva cancelada: ${object.name}</field>
+      <field name="body_html"><![CDATA[
+        <div>
+          <p>Reserva <strong>cancelada</strong> para seguimiento interno.</p>
+          <ul>
+            <li><strong>Cliente</strong>: ${object.partner_id.name or ''}</li>
+            <li><strong>Reserva</strong>: ${object.cer_booking_name or object.name}</li>
+            <li><strong>Entrada</strong>: ${object.cer_date_from or ''}</li>
+            <li><strong>Salida</strong>: ${object.cer_date_to or ''}</li>
+            <li><strong>Total</strong>: ${format_amount(object.amount_total, object.currency_id)}</li>
+          </ul>
+        </div>
+      ]]></field>
+    </record>
+
     <record id="mail_template_cer_sale_validity_reminder" model="mail.template">
       <field name="name">CER - Recordatorio vigencia cotización</field>
       <field name="model_id" ref="sale.model_sale_order"/>
