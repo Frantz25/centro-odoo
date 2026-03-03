@@ -1,3 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_cer_booking_user,cer.booking.user,model_cer_booking,cer_base.group_cer_user,1,1,1,0
 access_cer_booking_manager,cer.booking.manager,model_cer_booking,cer_base.group_cer_manager,1,1,1,1
+access_cer_unit_user,cer.unit.user,model_cer_unit,cer_base.group_cer_user,1,0,0,0
+access_cer_unit_manager,cer.unit.manager,model_cer_unit,cer_base.group_cer_manager,1,1,1,1

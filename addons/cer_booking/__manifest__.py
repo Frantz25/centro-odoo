@@ -17,6 +17,7 @@
         "views/sale_order_views.xml",
         "views/cer_booking_views.xml",     # acciones/vistas primero
         "views/cer_booking_capacity_views.xml",
+        "views/cer_unit_views.xml",
         "views/cer_booking_menus.xml",     # menús después (para evitar XMLID missing)
         "report/cer_booking_report.xml",
     ],

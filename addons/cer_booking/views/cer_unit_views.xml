@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="view_cer_unit_list" model="ir.ui.view">
+    <field name="name">cer.unit.list</field>
+    <field name="model">cer.unit</field>
+    <field name="arch" type="xml">
+      <list string="Unidades CER">
+        <field name="name"/>
+        <field name="unit_type"/>
+        <field name="capacity"/>
+        <field name="is_pool"/>
+        <field name="pool_qty"/>
+        <field name="company_id" groups="base.group_multi_company"/>
+        <field name="active"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_cer_unit_form" model="ir.ui.view">
+    <field name="name">cer.unit.form</field>
+    <field name="model">cer.unit</field>
+    <field name="arch" type="xml">
+      <form string="Unidad CER">
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="unit_type"/>
+              <field name="capacity"/>
+              <field name="active"/>
+            </group>
+            <group>
+              <field name="is_pool"/>
+              <field name="pool_qty" invisible="not is_pool"/>
+              <field name="company_id" groups="base.group_multi_company"/>
+            </group>
+          </group>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_cer_units" model="ir.actions.act_window">
+    <field name="name">Unidades CER</field>
+    <field name="res_model">cer.unit</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+</odoo>
