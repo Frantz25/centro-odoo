@@ -40,7 +40,6 @@ class CERCommunicationRule(models.Model):
         "res.company",
         required=True,
         default=lambda self: self.env.company,
-        check_company=True,
         index=True,
     )
 
