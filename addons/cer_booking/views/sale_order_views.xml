@@ -53,6 +53,7 @@
             <field name="cer_booking_state" readonly="1"/>
             <field name="cer_booking_offline_code" readonly="1"/>
             <field name="cer_booking_qr_url" widget="url" readonly="1"/>
+            <field name="cer_booking_qr_url" widget="barcode" options="{'symbology': 'QR'}" readonly="1"/>
           </group>
         </group>
       </xpath>
