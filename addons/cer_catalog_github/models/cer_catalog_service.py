@@ -156,7 +156,12 @@ class CERCatalogService(models.AbstractModel):
                         uom_id = self._find_uom(UoM, "Units", uom_cache) or self._find_uom(UoM, "Unit(s)", uom_cache)
                     if uom_id:
                         tmpl_vals["uom_id"] = uom_id
-                        tmpl_vals["uom_po_id"] = uom_id
+                        # Odoo 19 renamed purchase UoM field to purchase_uom_id in some builds.
+                        tmpl_fields = self.env["product.template"]._fields
+                        if "uom_po_id" in tmpl_fields:
+                            tmpl_vals["uom_po_id"] = uom_id
+                        elif "purchase_uom_id" in tmpl_fields:
+                            tmpl_vals["purchase_uom_id"] = uom_id
 
                 # taxes
                 tax_name = (r.get("tax") or "").strip()
