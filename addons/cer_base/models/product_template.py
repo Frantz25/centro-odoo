@@ -23,3 +23,14 @@ class ProductTemplate(models.Model):
         help="Mínimo de personas cuando el modo de cobro es por persona (person). 0 = sin mínimo.",
     )
 
+    cer_activity_kind = fields.Selection(
+        selection=[
+            ("canopy", "Canopy"),
+            ("arborismo", "Arborismo"),
+            ("trekking", "Trekking"),
+            ("other", "Otra"),
+        ],
+        string="CER - Tipo de actividad",
+        help="Clasificación de actividad para productos con cobro por persona.",
+    )
+
