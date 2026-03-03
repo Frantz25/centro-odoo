@@ -47,6 +47,7 @@ class CerBooking(models.Model):
         readonly=True,
         index=True,
     )
+    qr_url = fields.Char(string="URL QR", compute="_compute_qr_url", store=True)
 
     check_in = fields.Date(related="sale_order_id.cer_date_from", store=True, readonly=True)
     check_out = fields.Date(related="sale_order_id.cer_date_to", store=True, readonly=True)
@@ -95,13 +96,22 @@ class CerBooking(models.Model):
 
         order.message_post(
             body=_(
-                "Reserva CER creada automáticamente: <b>%(code)s</b> (offline: %(offline)s)."
+                "Reserva CER creada automáticamente: <b>%(code)s</b> (offline: %(offline)s). QR: %(url)s"
             )
-            % {"code": booking.booking_code, "offline": booking.offline_access_code}
+            % {"code": booking.booking_code, "offline": booking.offline_access_code, "url": booking.qr_url or "-"}
         )
         return booking
 
     @api.model
+    @api.depends("offline_access_code")
+    def _compute_qr_url(self):
+        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url") or ""
+        for rec in self:
+            if rec.offline_access_code:
+                rec.qr_url = f"{base_url}/cer/checkin/{rec.offline_access_code}"
+            else:
+                rec.qr_url = False
+
     def _generate_offline_access_code(self):
         # Token corto, no predecible, apto para QR offline
         return secrets.token_urlsafe(8)

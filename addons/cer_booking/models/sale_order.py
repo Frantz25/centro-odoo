@@ -27,6 +27,8 @@ class SaleOrder(models.Model):
 
     cer_booking_name = fields.Char(string="N° Reserva", copy=False, readonly=True, index=True)
     cer_booking_id = fields.Many2one("cer.booking", string="Reserva CER", copy=False, readonly=True)
+    cer_booking_offline_code = fields.Char(related="cer_booking_id.offline_access_code", string="Código Offline", readonly=True)
+    cer_booking_qr_url = fields.Char(related="cer_booking_id.qr_url", string="URL QR", readonly=True)
 
     cer_booking_overbooking = fields.Boolean(
         string="Permitir sobre-reserva",
